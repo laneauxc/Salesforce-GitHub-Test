@@ -1,0 +1,8 @@
+{
+  "featureFlags": {
+    "orderTracking": true,
+    "auditLogs": true
+  },
+  "deployDate": "2026-03-15",
+  "cloudProvider": "Azure"
+}
