@@ -1,0 +1,71 @@
+name: Autonomous Release Notes
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ['main', 'release/*', 'hotfix/*']
+
+jobs:
+  autonomously_generate_notes:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Gather Release Data and Build Prompt
+      id: prep
+      run: |
+        cat <<EOF > prompt.txt
+        I need you to generate business-friendly release notes for our Salesforce system deployment based on this Pull Request:
+        --
+        Repository: ${{ github.repository }}
+        PR Title: ${{ github.event.pull_request.title }}
+        PR URL: ${{ github.event.pull_request.html_url }}
+        PR Number: #${{ github.event.pull_request.number }}
+        PR Author: ${{ github.event.pull_request.user.login }}
+        PR Merger: ${{ github.event.pull_request.merged_by.login }}
+        Files Changed: ${{ github.event.pull_request.changed_files }}
+        Commit Count: ${{ github.event.pull_request.commits }}
+        Body:
+        ${{ github.event.pull_request.body }}
+
+        Please summarize the business value, key highlights, resolved issues, and overall impact in a way suitable for IT Directors and Business Analysts.
+        Format the response in Markdown with:
+        - Executive Summary
+        - Key Highlights (including resolved issues, enhancements, UI/business impact, compliance/security if any)
+        - Next Steps and Recommendations
+        - Additional Notes
+
+        The tone should be professional and business-oriented.
+        EOF
+
+    - name: Query OpenAI for Release Notes
+      id: ai
+      env:
+        OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $OPENAI_KEY" \
+          -d "$(jq -n \
+            --arg prompt "$(cat prompt.txt)" \
+            '{
+              "model": "gpt-4",
+              "messages": [{"role": "system", "content": "You are a business release notes generator."}, {"role": "user", "content": $prompt}],
+              "temperature": 0.4
+             }')")
+        RELEASE_NOTES=$(echo "$RESPONSE" | jq -r .choices[0].message.content)
+        echo "$RELEASE_NOTES" > release-notes.md
+        echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+        echo "$RELEASE_NOTES" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Post Release Notes as PR Comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ### 🚀 Autonomous Release Notes
+
+          ${{ env.RELEASE_NOTES }}
+
+          _These notes were generated automatically. Please review for completeness and accuracy._
