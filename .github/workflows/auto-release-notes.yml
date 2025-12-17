@@ -15,158 +15,129 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # ------------------------------------------------------------
-    # Step 1: Build the AI prompt from PR context
-    # ------------------------------------------------------------
-    - name: Gather Release Data and Build Prompt
-      run: |
-        cat <<'EOF' > prompt.txt
-        You are generating business-friendly release notes for a Salesforce system deployment.
+      - name: Gather Release Data and Build Prompt
+        run: |
+          cat <<'EOF' > prompt.txt
+          You are generating business-friendly release notes for a Salesforce system deployment.
 
-        Repository: ${{ github.repository }}
-        PR Title: ${{ github.event.pull_request.title }}
-        PR URL: ${{ github.event.pull_request.html_url }}
-        PR Number: #${{ github.event.pull_request.number }}
-        PR Author: ${{ github.event.pull_request.user.login }}
-        PR Merger: ${{ github.event.pull_request.merged_by.login }}
-        Files Changed: ${{ github.event.pull_request.changed_files }}
-        Commit Count: ${{ github.event.pull_request.commits }}
+          Repository: ${{ github.repository }}
+          PR Title: ${{ github.event.pull_request.title }}
+          PR URL: ${{ github.event.pull_request.html_url }}
+          PR Number: #${{ github.event.pull_request.number }}
+          PR Author: ${{ github.event.pull_request.user.login }}
+          PR Merger: ${{ github.event.pull_request.merged_by.login }}
+          Files Changed: ${{ github.event.pull_request.changed_files }}
+          Commit Count: ${{ github.event.pull_request.commits }}
 
-        Pull Request Description:
-        ${{ github.event.pull_request.body }}
+          Pull Request Description:
+          ${{ github.event.pull_request.body }}
 
-        Write release notes suitable for IT Directors and Business Analysts.
+          Write release notes suitable for IT Directors and Business Analysts.
 
-        Use Markdown with the following sections ONLY:
-        - Executive Summary
-        - Key Highlights
-        - Next Steps and Recommendations
-        - Additional Notes
+          Use Markdown with the following sections ONLY:
+          - Executive Summary
+          - Key Highlights
+          - Next Steps and Recommendations
+          - Additional Notes
 
-        Do NOT list contributors.
-        Do NOT list commits or files.
-        Do NOT reference who prepared the notes.
-        Focus on business value, risk reduction, and operational impact.
-        EOF
+          Do NOT list contributors.
+          Do NOT list commits or files.
+          Do NOT reference who prepared the notes.
+          Focus on business value, risk reduction, and operational impact.
+          EOF
 
-    # ------------------------------------------------------------
-    # Step 2: Call OpenAI to generate release notes
-    # ------------------------------------------------------------
-    - name: Query OpenAI for Release Notes
-      env:
-        OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Bearer $OPENAI_KEY" \
-          -d "$(jq -n \
-            --arg prompt "$(cat prompt.txt)" \
-            '{
-              "model": "gpt-4",
-              "messages": [
-                { "role": "system", "content": "You are a business-focused release notes generator." },
-                { "role": "user", "content": $prompt }
-              ],
-              "temperature": 0.4
-            }')")
-
-        RELEASE_NOTES=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
-
-        echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-        echo "$RELEASE_NOTES" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
-
-    # ------------------------------------------------------------
-    # Step 3: Determine the release tag (branch-driven)
-    # ------------------------------------------------------------
-    - name: Determine Release Tag
-      run: |
-        TAG_NAME="${{ github.event.pull_request.head.ref }}"
-        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-        echo "Using release tag: $TAG_NAME"
-
-    # ------------------------------------------------------------
-    # Step 4: Ensure git tag exists (required for GitHub Releases)
-    # ------------------------------------------------------------
-    - name: Create Git Tag if Missing
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        TAG="${{ env.TAG_NAME }}"
-        SHA="${{ github.event.pull_request.merge_commit_sha }}"
-
-        echo "Ensuring tag $TAG exists at commit $SHA"
-
-        curl -s -o /dev/null -w "%{http_code}" \
-          -X POST \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/${{ github.repository }}/git/refs \
-          -d "$(jq -n \
-            --arg ref "refs/tags/$TAG" \
-            --arg sha "$SHA" \
-            '{ ref: $ref, sha: $sha }')"
-
-    # ------------------------------------------------------------
-    # Step 5: Create or Update Draft GitHub Release
-    # ------------------------------------------------------------
-    - name: Create or Update GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        RELEASE_BODY=$(cat <<EOF
-${{ env.RELEASE_NOTES }}
-
----
-EOF
-)
-
-        EXISTING_RELEASE=$(curl -s \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.TAG_NAME }})
-
-        RELEASE_ID=$(echo "$EXISTING_RELEASE" | jq -r '.id // empty')
-
-        if [ -z "$RELEASE_ID" ]; then
-          echo "Creating new draft release for tag ${{ env.TAG_NAME }}"
-
-          curl -s -X POST \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/releases \
+      - name: Query OpenAI for Release Notes
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_KEY" \
             -d "$(jq -n \
-              --arg tag "${{ env.TAG_NAME }}" \
-              --arg name "${{ github.event.pull_request.title }}" \
-              --arg body "$RELEASE_BODY" \
+              --arg prompt "$(cat prompt.txt)" \
               '{
-                tag_name: $tag,
-                name: $name,
-                body: $body,
-                draft: true
-              }')"
-        else
-          echo "Updating existing release ID $RELEASE_ID"
+                "model": "gpt-4",
+                "messages": [
+                  { "role": "system", "content": "You are a business-focused release notes generator." },
+                  { "role": "user", "content": $prompt }
+                ],
+                "temperature": 0.4
+              }')")
 
-          curl -s -X PATCH \
+          RELEASE_NOTES=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "$RELEASE_NOTES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Determine Release Tag
+        run: |
+          TAG_NAME="${{ github.event.pull_request.head.ref }}"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Create Git Tag if Missing
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ env.TAG_NAME }}"
+          SHA="${{ github.event.pull_request.merge_commit_sha }}"
+
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID \
+            https://api.github.com/repos/${{ github.repository }}/git/refs \
             -d "$(jq -n \
-              --arg body "$RELEASE_BODY" \
-              '{ body: $body }')"
-        fi
+              --arg ref "refs/tags/$TAG" \
+              --arg sha "$SHA" \
+              '{ ref: $ref, sha: $sha }')"
 
-    # ------------------------------------------------------------
-    # Step 6: Post release notes back to PR (audit trail)
-    # ------------------------------------------------------------
-    - name: Post Release Notes as PR Comment
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ### 🚀 Autonomous Release Notes
-
+      - name: Create or Update GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_BODY=$(cat <<EOF
           ${{ env.RELEASE_NOTES }}
 
-          _These notes were generated automatically. Please review for completeness and accuracy._
+          ---
+          EOF
+          )
+
+          EXISTING_RELEASE=$(curl -s \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.TAG_NAME }})
+
+          RELEASE_ID=$(echo "$EXISTING_RELEASE" | jq -r '.id // empty')
+
+          if [ -z "$RELEASE_ID" ]; then
+            curl -s -X POST \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/${{ github.repository }}/releases \
+              -d "$(jq -n \
+                --arg tag "${{ env.TAG_NAME }}" \
+                --arg name "${{ github.event.pull_request.title }}" \
+                --arg body "$RELEASE_BODY" \
+                '{ tag_name: $tag, name: $name, body: $body, draft: true }')"
+          else
+            curl -s -X PATCH \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID \
+              -d "$(jq -n \
+                --arg body "$RELEASE_BODY" \
+                '{ body: $body }')"
+          fi
+
+      - name: Post Release Notes as PR Comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### 🚀 Autonomous Release Notes
+
+            ${{ env.RELEASE_NOTES }}
+
+            _These notes were generated automatically. Please review for completeness and accuracy._
+
