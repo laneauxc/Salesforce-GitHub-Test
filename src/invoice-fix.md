@@ -1,15 +1,15 @@
-# Bug Fix – Invoice Rounding
+# Invoice Calculation Fix
 
 ## Summary
-Resolved an invoice calculation bug where totals were off by up to $0.01 in specific edge cases.
+Resolved an issue where invoice totals could be off by a small margin due to rounding inconsistencies.
 
-## Implementation
-- Adjusted rounding after sum of line items.
-- Added test coverage for tax and subtotal edge cases.
+## Details
+- Updated rounding logic to occur after line-item aggregation
+- Ensures consistent totals across UI and exported reports
 
 ## Business Impact
-- Prevents future billing issues.
-- Improves accounting accuracy for financial records.
+- Prevents billing discrepancies
+- Improves trust in financial reporting
 
-## Reference
-- Issue #505
+## Risk
+Low. No schema changes.
