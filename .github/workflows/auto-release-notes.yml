@@ -1,3 +1,4 @@
+# Test change to validate release automation coverage
 name: Autonomous Release Notes
 
 on:

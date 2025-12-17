@@ -1,4 +1,6 @@
 {
-  "hotfixAuthPatch": true,
-  "invoiceBugFix": true
+  "enableInvoiceRoundingFix": true,
+  "enableEnhancedAuditLogging": true,
+  "hotfixAppliedDate": "2026-03-22",
+  "releaseChannel": "biweekly"
 }

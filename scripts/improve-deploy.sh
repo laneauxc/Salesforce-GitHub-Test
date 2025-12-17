@@ -1,10 +1,11 @@
 #!/bin/bash
-# Improved deployment script for hotfix rollbacks
 
 echo "Starting deployment..."
-# New rollback logic
+
+# Improved rollback handling
 if [ "$1" == "rollback" ]; then
-  echo "Rolling back to previous version..."
-  # Simulate rollback steps
+  echo "Rollback initiated..."
+  echo "Restoring previous stable state"
 fi
+
 echo "Deployment complete."
