@@ -19,7 +19,6 @@ jobs:
     # Step 1: Build the AI prompt from PR context
     # ------------------------------------------------------------
     - name: Gather Release Data and Build Prompt
-      id: prep
       run: |
         cat <<'EOF' > prompt.txt
         You are generating business-friendly release notes for a Salesforce system deployment.
@@ -54,7 +53,6 @@ jobs:
     # Step 2: Call OpenAI to generate release notes
     # ------------------------------------------------------------
     - name: Query OpenAI for Release Notes
-      id: ai
       env:
         OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
@@ -82,7 +80,6 @@ jobs:
     # Step 3: Determine the release tag (branch-driven)
     # ------------------------------------------------------------
     - name: Determine Release Tag
-      id: tag
       run: |
         TAG_NAME="${{ github.event.pull_request.head.ref }}"
         echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
@@ -121,7 +118,6 @@ jobs:
 ${{ env.RELEASE_NOTES }}
 
 ---
-
 EOF
 )
 
@@ -174,4 +170,3 @@ EOF
           ${{ env.RELEASE_NOTES }}
 
           _These notes were generated automatically. Please review for completeness and accuracy._
-
