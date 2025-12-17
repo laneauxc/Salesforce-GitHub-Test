@@ -1,11 +1,12 @@
-# Support Contact Update
+# Support Documentation Update
 
 ## Summary
-Updated support contact information in the Help documentation.
+Updated internal support documentation to reflect recent system changes.
 
 ## Changes
-- New phone number and email address replaced outdated ones.
-- Added escalation instructions for urgent requests.
+- Added troubleshooting steps for invoice discrepancies
+- Updated escalation contacts
+- Clarified expected turnaround times for billing issues
 
-## Reference
-- Issue #606
+## Audience
+Support and Customer Success teams
