@@ -8,4 +8,4 @@ if [ "$1" == "rollback" ]; then
   echo "Restoring previous stable state"
 fi
 
-echo "Deployment completed."
+echo "Deployment completed. "
