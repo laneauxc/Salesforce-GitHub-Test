@@ -1,0 +1,48 @@
+# GitHub Pages Configuration
+title: Salesforce GitHub Test Documentation
+description: Comprehensive documentation for the Salesforce GitHub Test repository
+theme: jekyll-theme-cayman
+baseurl: "/Salesforce-GitHub-Test"
+url: "https://laneauxc.github.io"
+
+# Navigation menu with nested items
+navigation:
+  - title: Home
+    url: /
+  - title: Features
+    url: /features/
+    subitems:
+      - title: Order Tracking API
+        url: /features/feature1.html
+      - title: User Permission Audit Logging
+        url: /features/feature2.html
+  - title: Bug Fixes
+    url: /bugfixes/
+    subitems:
+      - title: Invoice Calculation Fix
+        url: /bugfixes/invoice-fix.html
+      - title: Security Patch
+        url: /bugfixes/security-patch.html
+      - title: Dashboard Fixes
+        url: /bugfixes/bugfix-description.html
+  - title: Support
+    url: /support/
+    subitems:
+      - title: Support Documentation
+        url: /support/support-update.html
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-relative-links
+
+# Include these files in the build
+include:
+  - READMETEST.md
+
+# Exclude these files from the build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
