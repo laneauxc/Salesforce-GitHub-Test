@@ -113,11 +113,6 @@
             // Toggle submenu
             submenu.classList.toggle('active');
             chevron.classList.toggle('rotate');
-            
-            // Navigate to parent page on second click
-            if (!submenu.classList.contains('active')) {
-              window.location.href = this.getAttribute('href');
-            }
           });
         });
         
@@ -127,7 +122,8 @@
         
         allLinks.forEach(function(link) {
           const linkPath = new URL(link.href).pathname;
-          if (currentPath.includes(linkPath) && linkPath !== '/') {
+          // Use exact match or check if current path starts with link path (for index pages)
+          if (currentPath === linkPath || (linkPath !== '/' && currentPath.startsWith(linkPath))) {
             link.classList.add('active');
             
             // Expand parent if sublink is active
