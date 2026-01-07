@@ -1,0 +1,33 @@
+# GitHub Pages Configuration
+title: Salesforce GitHub Test Documentation
+description: Comprehensive documentation for the Salesforce GitHub Test repository
+theme: jekyll-theme-cayman
+baseurl: "/Salesforce-GitHub-Test"
+url: "https://laneauxc.github.io"
+
+# Navigation menu
+navigation:
+  - title: Home
+    url: /
+  - title: Features
+    url: /features/
+  - title: Bug Fixes
+    url: /bugfixes/
+  - title: Support
+    url: /support/
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-relative-links
+
+# Include these files in the build
+include:
+  - READMETEST.md
+
+# Exclude these files from the build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
