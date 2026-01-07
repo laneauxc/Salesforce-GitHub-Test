@@ -121,22 +121,27 @@
         const allLinks = document.querySelectorAll('.nav-link, .nav-sublink');
         
         allLinks.forEach(function(link) {
-          const linkPath = new URL(link.href).pathname;
-          // Use exact match or check if current path starts with link path (for index pages)
-          if (currentPath === linkPath || (linkPath !== '/' && currentPath.startsWith(linkPath))) {
-            link.classList.add('active');
-            
-            // Expand parent if sublink is active
-            if (link.classList.contains('nav-sublink')) {
-              const submenu = link.closest('.nav-submenu');
-              if (submenu) {
-                submenu.classList.add('active');
-                const parentLink = submenu.previousElementSibling;
-                if (parentLink) {
-                  parentLink.querySelector('.chevron')?.classList.add('rotate');
+          try {
+            const linkPath = new URL(link.href, window.location.origin).pathname;
+            // Use exact match for precise highlighting
+            if (currentPath === linkPath) {
+              link.classList.add('active');
+              
+              // Expand parent if sublink is active
+              if (link.classList.contains('nav-sublink')) {
+                const submenu = link.closest('.nav-submenu');
+                if (submenu) {
+                  submenu.classList.add('active');
+                  const parentLink = submenu.previousElementSibling;
+                  if (parentLink) {
+                    parentLink.querySelector('.chevron')?.classList.add('rotate');
+                  }
                 }
               }
             }
+          } catch (e) {
+            // Skip invalid URLs
+            console.warn('Invalid URL in navigation:', link.href);
           }
         });
       });
