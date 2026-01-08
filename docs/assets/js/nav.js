@@ -41,16 +41,17 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Close sidebar when clicking on overlay (mobile)
    */
-  if (window.innerWidth <= 768) {
-    sidebar.addEventListener('click', function(e) {
-      // Check if click is on the overlay (not on sidebar content)
+  document.addEventListener('click', function(e) {
+    // Only on mobile viewports
+    if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
       const rect = sidebar.getBoundingClientRect();
-      if (e.clientX >= rect.right) {
+      // Check if click is outside the sidebar (on the overlay)
+      if (e.clientX >= rect.right || e.clientX < rect.left) {
         sidebar.classList.remove('active');
         document.body.style.overflow = '';
       }
-    });
-  }
+    }
+  });
   
   /**
    * Collapsible menu items
@@ -64,13 +65,19 @@ document.addEventListener('DOMContentLoaded', function() {
       const submenu = document.getElementById(targetId);
       const chevron = this.querySelector('.chevron');
       
-      // Toggle submenu
-      submenu.classList.toggle('active');
-      chevron.classList.toggle('rotate');
+      // Ensure elements exist before manipulating
+      if (submenu) {
+        // Toggle submenu
+        submenu.classList.toggle('active');
+        
+        // Update aria-expanded for accessibility
+        const isExpanded = submenu.classList.contains('active');
+        this.setAttribute('aria-expanded', isExpanded);
+      }
       
-      // Update aria-expanded for accessibility
-      const isExpanded = submenu.classList.contains('active');
-      this.setAttribute('aria-expanded', isExpanded);
+      if (chevron) {
+        chevron.classList.toggle('rotate');
+      }
     });
     
     // Initialize aria-expanded attribute
