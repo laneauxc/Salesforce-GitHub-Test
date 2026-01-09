@@ -242,6 +242,15 @@ body {
   color: var(--text-subtle);
 }
 
+/* Search highlighting */
+mark {
+  background-color: rgba(28, 155, 254, 0.2);
+  color: var(--text);
+  padding: 0.125rem 0.25rem;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
 /* ============================================
    NAVIGATION STYLES
    ============================================ */

@@ -23,22 +23,21 @@
               class="brand-logo"
               onerror="this.onerror=null; this.src='{{ '/assets/images/convopro-logo.png' | relative_url }}'"
             />
-            <span class="brand-name">ConvoPro Docs</span>
+            <span class="brand-name">Docs</span>
           </div>
           <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
             <i class="fas fa-bars"></i>
           </button>
         </div>
         
-        <!-- Optional Search UI -->
+        <!-- Search UI -->
         <div class="sidebar-search">
           <input 
             type="text" 
             class="search-input" 
+            id="searchInput"
             placeholder="Search docs..." 
             aria-label="Search documentation"
-            disabled
-            title="Search functionality coming soon"
           />
         </div>
         
