@@ -169,8 +169,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Split text and create text nodes with mark elements
     const parts = text.split(regex);
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    
     parts.forEach(function(part) {
-      if (part.toLowerCase() === searchTerm.toLowerCase()) {
+      if (part && part.toLowerCase() === lowerSearchTerm) {
         const mark = document.createElement('mark');
         mark.textContent = part;
         element.appendChild(mark);
