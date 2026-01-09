@@ -1,0 +1,7 @@
+# Images Directory
+
+This directory contains logo and image assets for the documentation site.
+
+## Expected Files
+
+- `convopro-logo.svg` or `convopro-logo.png` - ConvoPro logo for sidebar branding

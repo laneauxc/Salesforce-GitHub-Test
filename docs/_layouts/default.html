@@ -14,11 +14,32 @@
     <div class="page-wrapper">
       <!-- Sidebar Navigation -->
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">{{ site.title | default: site.github.repository_name }}</h2>
+        <!-- Brand Header with Logo -->
+        <div class="sidebar-brand">
+          <div class="brand-logo-container">
+            <img 
+              src="{{ '/assets/images/convopro-logo.svg' | relative_url }}" 
+              alt="ConvoPro Logo" 
+              class="brand-logo"
+              onerror="this.onerror=null; this.src='{{ '/assets/images/convopro-logo.png' | relative_url }}'"
+            />
+            <span class="brand-name">ConvoPro Docs</span>
+          </div>
           <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
             <i class="fas fa-bars"></i>
           </button>
+        </div>
+        
+        <!-- Optional Search UI -->
+        <div class="sidebar-search">
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Search docs..." 
+            aria-label="Search documentation"
+            disabled
+            title="Search functionality coming soon"
+          />
         </div>
         
         <nav class="sidebar-nav">
@@ -78,73 +99,6 @@
       </div>
     </div>
 
-    <script>
-      // Sidebar toggle functionality
-      document.addEventListener('DOMContentLoaded', function() {
-        const sidebar = document.getElementById('sidebar');
-        const mobileToggle = document.getElementById('mobileToggle');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        
-        // Mobile toggle
-        if (mobileToggle) {
-          mobileToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('active');
-          });
-        }
-        
-        // Desktop sidebar toggle
-        if (sidebarToggle) {
-          sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            document.querySelector('.content-wrapper').classList.toggle('expanded');
-          });
-        }
-        
-        // Collapsible menu items
-        const navLinksWithChildren = document.querySelectorAll('.nav-link.has-children');
-        
-        navLinksWithChildren.forEach(function(link) {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('data-target');
-            const submenu = document.getElementById(targetId);
-            const chevron = this.querySelector('.chevron');
-            
-            // Toggle submenu
-            submenu.classList.toggle('active');
-            chevron.classList.toggle('rotate');
-          });
-        });
-        
-        // Highlight active page
-        const currentPath = window.location.pathname;
-        const allLinks = document.querySelectorAll('.nav-link, .nav-sublink');
-        
-        allLinks.forEach(function(link) {
-          try {
-            const linkPath = new URL(link.href, window.location.origin).pathname;
-            // Use exact match for precise highlighting
-            if (currentPath === linkPath) {
-              link.classList.add('active');
-              
-              // Expand parent if sublink is active
-              if (link.classList.contains('nav-sublink')) {
-                const submenu = link.closest('.nav-submenu');
-                if (submenu) {
-                  submenu.classList.add('active');
-                  const parentLink = submenu.previousElementSibling;
-                  if (parentLink) {
-                    parentLink.querySelector('.chevron')?.classList.add('rotate');
-                  }
-                }
-              }
-            }
-          } catch (e) {
-            // Skip invalid URLs
-            console.warn('Invalid URL in navigation:', link.href);
-          }
-        });
-      });
-    </script>
+    <script src="{{ '/assets/js/nav.js' | relative_url }}"></script>
   </body>
 </html>
