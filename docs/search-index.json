@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Support Update",
+    "url": "/Salesforce-GitHub-Test/support-update.html",
+    "content": "Support Documentation Update Summary Updated internal support documentation to reflect recent system changes. Changes - Added troubleshooting steps for invoice discrepancies - Updated escalation contacts - Clarified expected turnaround times for billing issues Audience Support and Customer Success teams This is a test file."
+  },
+  {
+    "title": "Bugfix Description",
+    "url": "/Salesforce-GitHub-Test/bugfix-description.html",
+    "content": "Bug Fixes for Reporting Dashboard Issues Addressed - Fixed intermittent errors on the dashboard charts caused by missing data fields. - Improved error messages and loading indicators for a smoother user experience. Related Issue - #202"
+  },
+  {
+    "title": "Home",
+    "url": "/Salesforce-GitHub-Test/",
+    "content": "Salesforce GitHub Test Documentation Welcome to the documentation repository for the Salesforce GitHub Test project. This site provides comprehensive documentation for features, bug fixes, security updates, and support resources. What's New This repository contains documentation for: - Features: New functionality and API integrations - Bug Fixes: Resolved issues and improvements - Security Updates: Critical security patches and enhancements - Support: Documentation and resources for support team"
+  },
+  {
+    "title": "Invoice Calculation Fix",
+    "url": "/Salesforce-GitHub-Test/bugfixes/invoice-fix.html",
+    "content": "Invoice Calculation Fix Summary Resolved an issue where invoice totals could be off by a small margin due to rounding inconsistencies. Details - Updated rounding logic to occur after line-item aggregation - Ensures consistent totals across UI and exported reports Business Impact - Prevents billing discrepancies - Improves trust in financial reporting Risk Low. No schema changes. --- ← Back to Bug Fixes | Home"
+  },
+  {
+    "title": "Security Patch - Authentication Vulnerability",
+    "url": "/Salesforce-GitHub-Test/bugfixes/security-patch.html",
+    "content": "Security Patch - Authentication Vulnerability Summary Closed a critical vulnerability affecting API authentication. All requests now require validated JWTs and legacy tokens are no longer accepted. Business Impact - Enhances system security. - Addresses audit compliance for customer data protection. Reference - Issue #404 --- ← Back to Bug Fixes | Home"
+  },
+  {
+    "title": "Reporting Dashboard Bug Fixes",
+    "url": "/Salesforce-GitHub-Test/bugfixes/bugfix-description.html",
+    "content": "Bug Fixes for Reporting Dashboard Issues Addressed - Fixed intermittent errors on the dashboard charts caused by missing data fields. - Improved error messages and loading indicators for a smoother user experience. Related Issue - #202 --- ← Back to Bug Fixes | Home"
+  },
+  {
+    "title": "Bug Fixes",
+    "url": "/Salesforce-GitHub-Test/bugfixes/index.html",
+    "content": "Bug Fixes & Updates This section contains documentation for bug fixes, patches, and system improvements. Recent Fixes Invoice Calculation Fix Resolved an issue where invoice totals could be off by a small margin due to rounding inconsistencies. Impact: - Prevents billing discrepancies - Improves trust in financial reporting - Low risk implementation with no schema changes --- Security Patch - Authentication Vulnerability Closed a critical vulnerability affecting API authentication. All requests "
+  },
+  {
+    "title": "Support Documentation Update",
+    "url": "/Salesforce-GitHub-Test/support/support-update.html",
+    "content": "Support Documentation Update Summary Updated internal support documentation to reflect recent system changes. Changes - Added troubleshooting steps for invoice discrepancies - Updated escalation contacts - Clarified expected turnaround times for billing issues Audience Support and Customer Success teams --- ← Back to Support Resources | Home"
+  },
+  {
+    "title": "Support Resources",
+    "url": "/Salesforce-GitHub-Test/support/index.html",
+    "content": "Support Resources This section contains documentation and resources for support and customer success teams. Available Resources Support Documentation Updates Updated internal support documentation to reflect recent system changes. What's Included: - Added troubleshooting steps for invoice discrepancies - Updated escalation contacts - Clarified expected turnaround times for billing issues Audience: Support and Customer Success teams --- Need Help? For additional support resources or to report iss"
+  },
+  {
+    "title": "Order Tracking API Integration",
+    "url": "/Salesforce-GitHub-Test/features/feature1.html",
+    "content": "Feature 1 – Order Tracking API Integration Summary Introduced a new API integration for real-time order tracking. This allows users to view the status of their orders throughout the fulfillment process. Business Impact - Increases customer transparency. - Supports customer service with up-to-date order data. Technical Details - Integrated with carrier webhooks. - Updates reflected in user dashboard. --- ← Back to Features | Home"
+  },
+  {
+    "title": "User Permission Audit Logging",
+    "url": "/Salesforce-GitHub-Test/features/feature2.html",
+    "content": "Feature 2 – User Permission Audit Logging Summary Added detailed audit logging for changes to user permissions. Benefits - Supports compliance and security policy requirements. - Allows administrators to trace permission changes by user and timestamp. Implementation - All permission changes logged to the central audit log. - Accessible from Admin console. --- ← Back to Features | Home"
+  },
+  {
+    "title": "Features",
+    "url": "/Salesforce-GitHub-Test/features/index.html",
+    "content": "Features This section contains documentation for all new features and enhancements added to the system. Available Features Order Tracking API Integration Introduced a new API integration for real-time order tracking, allowing users to view the status of their orders throughout the fulfillment process. Key Benefits: - Increases customer transparency - Supports customer service with up-to-date order data - Integrated with carrier webhooks --- User Permission Audit Logging Added detailed audit logg"
+  }
+]
