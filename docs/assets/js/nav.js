@@ -149,6 +149,45 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   const searchInput = document.getElementById('searchInput');
   
+  /**
+   * Escape special regex characters in user input
+   */
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  
+  /**
+   * Highlight matching text safely
+   */
+  function highlightText(element, searchTerm) {
+    const text = element.textContent;
+    const escapedTerm = escapeRegex(searchTerm);
+    const regex = new RegExp('(' + escapedTerm + ')', 'gi');
+    
+    // Clear existing content
+    element.textContent = '';
+    
+    // Split text and create text nodes with mark elements
+    const parts = text.split(regex);
+    parts.forEach(function(part) {
+      if (part.toLowerCase() === searchTerm.toLowerCase()) {
+        const mark = document.createElement('mark');
+        mark.textContent = part;
+        element.appendChild(mark);
+      } else if (part) {
+        element.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+  
+  /**
+   * Reset element to plain text
+   */
+  function resetText(element) {
+    const text = element.textContent;
+    element.textContent = text;
+  }
+  
   if (searchInput) {
     searchInput.addEventListener('input', function(e) {
       const searchTerm = e.target.value.toLowerCase().trim();
@@ -160,13 +199,13 @@ document.addEventListener('DOMContentLoaded', function() {
           item.style.display = '';
           // Reset any highlighted text
           const navLink = item.querySelector('.nav-link span');
-          if (navLink && navLink.textContent) {
-            navLink.innerHTML = navLink.textContent;
+          if (navLink) {
+            resetText(navLink);
           }
           const sublinks = item.querySelectorAll('.nav-sublink');
           sublinks.forEach(function(sublink) {
             sublink.style.display = '';
-            sublink.innerHTML = sublink.textContent;
+            resetText(sublink);
           });
         });
         return;
@@ -187,9 +226,8 @@ document.addEventListener('DOMContentLoaded', function() {
           if (sublinkText.includes(searchTerm)) {
             hasSubMatch = true;
             sublink.style.display = '';
-            // Highlight matching text
-            const regex = new RegExp('(' + searchTerm + ')', 'gi');
-            sublink.innerHTML = sublink.textContent.replace(regex, '<mark>$1</mark>');
+            // Highlight matching text safely
+            highlightText(sublink, searchTerm);
           } else {
             sublink.style.display = 'none';
           }
@@ -201,8 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           // Highlight main nav link if it matches
           if (hasMatch && navLink) {
-            const regex = new RegExp('(' + searchTerm + ')', 'gi');
-            navLink.innerHTML = navLink.textContent.replace(regex, '<mark>$1</mark>');
+            highlightText(navLink, searchTerm);
           }
           
           // Auto-expand submenu if subitems match
