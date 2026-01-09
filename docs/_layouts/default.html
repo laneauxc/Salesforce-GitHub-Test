@@ -14,8 +14,17 @@
     <div class="page-wrapper">
       <!-- Sidebar Navigation -->
       <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">{{ site.title | default: site.github.repository_name }}</h2>
+        <!-- Brand Header with Logo -->
+        <div class="sidebar-brand">
+          <div class="brand-logo-container">
+            <img 
+              src="{{ '/assets/images/convopro-logo.svg' | relative_url }}" 
+              alt="ConvoPro Logo" 
+              class="brand-logo"
+              onerror="this.onerror=null; this.src='{{ '/assets/images/convopro-logo.png' | relative_url }}'"
+            />
+            <span class="brand-name">ConvoPro Docs</span>
+          </div>
           <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
             <i class="fas fa-bars"></i>
           </button>
