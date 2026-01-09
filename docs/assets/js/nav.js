@@ -1,24 +1,11 @@
 /**
  * Navigation and Sidebar Functionality
- * Handles sidebar toggle, collapsible menu items, active page highlighting, and mobile interactions
+ * Handles collapsible menu items, active page highlighting, and mobile interactions
  */
 
 document.addEventListener('DOMContentLoaded', function() {
   const sidebar = document.getElementById('sidebar');
   const mobileToggle = document.getElementById('mobileToggle');
-  const sidebarToggle = document.getElementById('sidebarToggle');
-  
-  /**
-   * Restore sidebar collapsed state from localStorage
-   */
-  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-  if (isCollapsed && sidebar) {
-    sidebar.classList.add('collapsed');
-    const contentWrapper = document.querySelector('.content-wrapper');
-    if (contentWrapper) {
-      contentWrapper.classList.add('expanded');
-    }
-  }
   
   /**
    * Mobile sidebar toggle
@@ -27,20 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     mobileToggle.addEventListener('click', function() {
       sidebar.classList.toggle('active');
       document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-    });
-  }
-  
-  /**
-   * Desktop sidebar collapse toggle
-   */
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener('click', function() {
-      sidebar.classList.toggle('collapsed');
-      document.querySelector('.content-wrapper').classList.toggle('expanded');
-      
-      // Save state to localStorage
-      const collapsed = sidebar.classList.contains('collapsed');
-      localStorage.setItem('sidebarCollapsed', collapsed);
     });
   }
   
