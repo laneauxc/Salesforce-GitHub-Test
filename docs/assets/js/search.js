@@ -234,7 +234,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close results when clicking outside
     document.addEventListener('click', function(e) {
-      if (!searchInput.contains(e.target) && !searchResultsContainer.contains(e.target)) {
+      if (searchInput && searchResultsContainer && 
+          !searchInput.contains(e.target) && !searchResultsContainer.contains(e.target)) {
         hideSearchResults();
       }
     });

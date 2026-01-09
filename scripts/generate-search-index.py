@@ -14,8 +14,12 @@ BASEURL = '/Salesforce-GitHub-Test'
 
 def extract_frontmatter_and_content(file_path):
     """Extract YAML frontmatter and markdown content from a file"""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except (IOError, OSError) as e:
+        print(f"Warning: Could not read file {file_path}: {e}")
+        return None, ""
     
     # Check for frontmatter
     if content.startswith('---'):
