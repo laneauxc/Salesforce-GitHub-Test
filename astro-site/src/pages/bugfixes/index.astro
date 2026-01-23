@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Bug Fixes" description="Resolved issues and improvements">
+  <h1>Bug Fixes</h1>
+
+  <p>This section documents important bug fixes and improvements made to the Salesforce GitHub Test project.</p>
+
+  <h2>Recent Fixes</h2>
+
+  <h3><a href={`${import.meta.env.BASE_URL}bugfixes/invoice-fix/`}>Invoice Calculation Fix</a></h3>
+  <p>Resolved rounding inconsistencies in invoice totals to ensure accurate financial calculations.</p>
+
+  <h3><a href={`${import.meta.env.BASE_URL}bugfixes/security-patch/`}>Security Patch - Authentication</a></h3>
+  <p>Critical fix for authentication vulnerability to prevent potential unauthorized access.</p>
+
+  <h3><a href={`${import.meta.env.BASE_URL}bugfixes/bugfix-description/`}>Reporting Dashboard Fixes</a></h3>
+  <p>Comprehensive stability and performance improvements for the reporting dashboard.</p>
+
+  <hr>
+
+  <p><a href={`${import.meta.env.BASE_URL}`}>← Back to Home</a></p>
+</Layout>

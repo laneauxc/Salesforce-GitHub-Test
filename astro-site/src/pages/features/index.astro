@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Features" description="Explore new features and API integrations">
+  <h1>Features</h1>
+
+  <p>This section documents the new features and functionality added to the Salesforce GitHub Test project.</p>
+
+  <h2>Available Features</h2>
+
+  <h3><a href={`${import.meta.env.BASE_URL}features/feature1/`}>Order Tracking API Integration</a></h3>
+  <p>Real-time order tracking capability through carrier webhook integrations.</p>
+
+  <h3><a href={`${import.meta.env.BASE_URL}features/feature2/`}>User Permission Audit Logging</a></h3>
+  <p>Comprehensive audit logging system for tracking user permission changes.</p>
+
+  <hr>
+
+  <p><a href={`${import.meta.env.BASE_URL}`}>← Back to Home</a></p>
+</Layout>

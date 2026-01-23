@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Security Patch - Authentication" description="Critical authentication vulnerability fix">
+  <h1>Security Patch – Authentication Vulnerability</h1>
+
+  <h2>Issue</h2>
+  <p>A critical security vulnerability was discovered in the authentication system that could potentially allow unauthorized access under specific conditions.</p>
+
+  <h2>Resolution</h2>
+  <p>Implemented enhanced authentication checks and session validation. Updated all authentication endpoints to use secure token verification.</p>
+
+  <h2>Impact</h2>
+  <ul>
+    <li>Eliminates potential unauthorized access vulnerability.</li>
+    <li>Strengthens overall system security posture.</li>
+    <li>Ensures compliance with security best practices.</li>
+  </ul>
+
+  <h2>Technical Changes</h2>
+  <ul>
+    <li>Enhanced JWT token validation logic.</li>
+    <li>Implemented additional session state verification.</li>
+    <li>Added rate limiting for authentication endpoints.</li>
+    <li>Updated security documentation and guidelines.</li>
+  </ul>
+
+  <h2>Recommendations</h2>
+  <p>All users are encouraged to log out and log back in to refresh their authentication tokens. System administrators should review access logs for any suspicious activity.</p>
+
+  <hr>
+
+  <p><a href={`${import.meta.env.BASE_URL}bugfixes/`}>← Back to Bug Fixes</a> | <a href={`${import.meta.env.BASE_URL}`}>Home</a></p>
+</Layout>
