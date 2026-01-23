@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Invoice Calculation Fix" description="Resolved invoice calculation rounding inconsistencies">
+  <h1>Invoice Calculation Fix</h1>
+
+  <h2>Issue</h2>
+  <p>Invoice totals were occasionally off by a few cents due to inconsistent rounding during tax and discount calculations.</p>
+
+  <h2>Resolution</h2>
+  <p>Updated the calculation logic to ensure consistent rounding at each step. All monetary values now round to two decimal places using banker's rounding (round half to even).</p>
+
+  <h2>Impact</h2>
+  <ul>
+    <li>Eliminates discrepancies in invoice totals.</li>
+    <li>Improves customer trust and reduces support inquiries.</li>
+    <li>Ensures compliance with financial reporting standards.</li>
+  </ul>
+
+  <h2>Technical Changes</h2>
+  <ul>
+    <li>Implemented standardized rounding function across all calculation modules.</li>
+    <li>Added unit tests for edge cases in tax and discount calculations.</li>
+    <li>Updated documentation for financial calculation procedures.</li>
+  </ul>
+
+  <hr>
+
+  <p><a href={`${import.meta.env.BASE_URL}bugfixes/`}>← Back to Bug Fixes</a> | <a href={`${import.meta.env.BASE_URL}`}>Home</a></p>
+</Layout>

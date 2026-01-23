@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Home" description="Comprehensive documentation for the Salesforce GitHub Test project">
+  <h1>Salesforce GitHub Test Documentation</h1>
+
+  <p>Welcome to the documentation repository for the Salesforce GitHub Test project. This site provides comprehensive documentation for features, bug fixes, security updates, and support resources.</p>
+
+  <h2>What's New</h2>
+
+  <p>This repository contains documentation for:</p>
+
+  <ul>
+    <li><strong>Features</strong>: New functionality and API integrations</li>
+    <li><strong>Bug Fixes</strong>: Resolved issues and improvements</li>
+    <li><strong>Security Updates</strong>: Critical security patches and enhancements</li>
+    <li><strong>Support</strong>: Documentation and resources for support teams</li>
+  </ul>
+
+  <h2>Quick Links</h2>
+
+  <h3>Features</h3>
+  <ul>
+    <li><a href={`${import.meta.env.BASE_URL}features/feature1/`}>Order Tracking API Integration</a> - Real-time order tracking capability</li>
+    <li><a href={`${import.meta.env.BASE_URL}features/feature2/`}>User Permission Audit Logging</a> - Comprehensive audit logging system</li>
+  </ul>
+
+  <h3>Bug Fixes & Updates</h3>
+  <ul>
+    <li><a href={`${import.meta.env.BASE_URL}bugfixes/invoice-fix/`}>Invoice Calculation Fix</a> - Resolved rounding inconsistencies</li>
+    <li><a href={`${import.meta.env.BASE_URL}bugfixes/security-patch/`}>Security Patch - Authentication</a> - Critical authentication vulnerability fix</li>
+    <li><a href={`${import.meta.env.BASE_URL}bugfixes/bugfix-description/`}>Reporting Dashboard Fixes</a> - Dashboard stability improvements</li>
+  </ul>
+
+  <h3>Support Resources</h3>
+  <ul>
+    <li><a href={`${import.meta.env.BASE_URL}support/support-update/`}>Support Documentation Updates</a> - Latest support guidelines and procedures</li>
+  </ul>
+
+  <h2>About This Documentation</h2>
+
+  <p>This documentation is automatically published from the repository and can be integrated with other project documentation sites. Each section is organized to provide clear, accessible information for developers, support teams, and stakeholders.</p>
+
+  <hr>
+
+  <p>For more information or to contribute, visit our <a href="https://github.com/laneauxc/Salesforce-GitHub-Test">GitHub repository</a>.</p>
+</Layout>

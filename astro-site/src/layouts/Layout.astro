@@ -1,0 +1,197 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const baseUrl = import.meta.env.BASE_URL;
+
+const navigation = [
+  {
+    title: 'Home',
+    url: '/',
+    subitems: []
+  },
+  {
+    title: 'Features',
+    url: '/features/',
+    subitems: [
+      { title: 'Order Tracking API', url: '/features/feature1/' },
+      { title: 'User Permission Audit Logging', url: '/features/feature2/' }
+    ]
+  },
+  {
+    title: 'Bug Fixes',
+    url: '/bugfixes/',
+    subitems: [
+      { title: 'Invoice Calculation Fix', url: '/bugfixes/invoice-fix/' },
+      { title: 'Security Patch', url: '/bugfixes/security-patch/' },
+      { title: 'Dashboard Fixes', url: '/bugfixes/bugfix-description/' }
+    ]
+  },
+  {
+    title: 'Support',
+    url: '/support/',
+    subitems: [
+      { title: 'Support Documentation', url: '/support/support-update/' }
+    ]
+  }
+];
+
+// Get current path for active link highlighting
+const currentPath = Astro.url.pathname.replace(baseUrl, '/').replace(/\/$/, '') || '/';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title} - Salesforce GitHub Test Documentation</title>
+    <meta name="description" content={description || "Comprehensive documentation for the Salesforce GitHub Test repository"}>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Brand Header with Logo -->
+        <div class="sidebar-brand">
+          <div class="brand-logo-container">
+            <img 
+              src={`${baseUrl}assets/images/convopro-logo.png`}
+              alt="ConvoPro Logo" 
+              class="brand-logo"
+            />
+            <span class="brand-name">Docs</span>
+          </div>
+        </div>
+        
+        <!-- Search UI -->
+        <div class="sidebar-search">
+          <input 
+            type="text" 
+            class="search-input" 
+            id="searchInput"
+            placeholder="Search docs..." 
+            aria-label="Search documentation"
+          />
+        </div>
+        
+        <nav class="sidebar-nav">
+          {navigation.map((item, index) => (
+            <div class="nav-item">
+              {item.subitems && item.subitems.length > 0 ? (
+                <>
+                  <a href={`${baseUrl}${item.url.slice(1)}`} class="nav-link has-children" data-target={`submenu-${index}`}>
+                    <span>{item.title}</span>
+                    <i class="fas fa-chevron-down chevron"></i>
+                  </a>
+                  <ul class="nav-submenu" id={`submenu-${index}`}>
+                    {item.subitems.map((subitem) => (
+                      <li>
+                        <a 
+                          href={`${baseUrl}${subitem.url.slice(1)}`}
+                          class={`nav-sublink ${currentPath === subitem.url.replace(/\/$/, '') ? 'active' : ''}`}
+                        >
+                          {subitem.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <a 
+                  href={`${baseUrl}${item.url.slice(1)}`}
+                  class={`nav-link ${currentPath === item.url.replace(/\/$/, '') ? 'active' : ''}`}
+                >
+                  <span>{item.title}</span>
+                </a>
+              )}
+            </div>
+          ))}
+          
+          <div class="nav-item">
+            <a href="https://github.com/laneauxc/Salesforce-GitHub-Test" class="nav-link" target="_blank">
+              <span>View on GitHub</span>
+              <i class="fas fa-external-link-alt"></i>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="content-wrapper">
+        <header class="page-header" role="banner">
+          <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title">{title}</h1>
+          {description && <p class="page-description">{description}</p>}
+        </header>
+
+        <main id="content" class="main-content" role="main">
+          <slot />
+
+          <footer class="site-footer">
+            <span class="site-footer-owner">
+              <a href="https://github.com/laneauxc/Salesforce-GitHub-Test">Salesforce-GitHub-Test</a> is maintained by 
+              <a href="https://github.com/laneauxc">laneauxc</a>.
+            </span>
+            <span class="site-footer-credits">Built with <a href="https://astro.build">Astro</a> - A modern static site builder.</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script is:inline>
+      // Mobile menu toggle
+      const mobileToggle = document.getElementById('mobileToggle');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (mobileToggle && sidebar) {
+        mobileToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+        });
+      }
+
+      // Submenu toggle
+      document.querySelectorAll('.nav-link.has-children').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('data-target');
+          const submenu = document.getElementById(targetId);
+          const chevron = link.querySelector('.chevron');
+          
+          if (submenu) {
+            submenu.classList.toggle('active');
+          }
+          if (chevron) {
+            chevron.classList.toggle('rotate');
+          }
+        });
+      });
+
+      // Auto-open active submenu on page load
+      document.querySelectorAll('.nav-sublink.active').forEach(activeLink => {
+        const submenu = activeLink.closest('.nav-submenu');
+        if (submenu) {
+          submenu.classList.add('active');
+          const parentLink = document.querySelector(`[data-target="${submenu.id}"]`);
+          if (parentLink) {
+            const chevron = parentLink.querySelector('.chevron');
+            if (chevron) {
+              chevron.classList.add('rotate');
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>
