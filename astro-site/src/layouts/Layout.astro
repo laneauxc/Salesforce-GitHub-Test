@@ -130,7 +130,38 @@ const currentPath = Astro.url.pathname.replace(baseUrl, '/').replace(/\/$/, '') 
           </button>
           <h1 class="page-title">{title}</h1>
           {description && <p class="page-description">{description}</p>}
+          
+          <!-- Download Button -->
+          <button class="download-btn" id="downloadBtn" aria-label="Download data">
+            <i class="fas fa-download"></i>
+            <span>Download Data</span>
+          </button>
         </header>
+
+        <!-- Download Modal -->
+        <div class="modal" id="downloadModal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Download Sample Data</h2>
+              <button class="modal-close" id="modalClose" aria-label="Close modal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Choose a format to download sample documentation data:</p>
+              <div class="download-options">
+                <button class="download-option-btn" id="downloadJSON">
+                  <i class="fas fa-file-code"></i>
+                  <span>Download JSON</span>
+                </button>
+                <button class="download-option-btn" id="downloadXML">
+                  <i class="fas fa-file-code"></i>
+                  <span>Download XML</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <main id="content" class="main-content" role="main">
           <slot />
@@ -188,6 +219,143 @@ const currentPath = Astro.url.pathname.replace(baseUrl, '/').replace(/\/$/, '') 
           }
         }
       });
+
+      // Modal functionality
+      const downloadBtn = document.getElementById('downloadBtn');
+      const downloadModal = document.getElementById('downloadModal');
+      const modalClose = document.getElementById('modalClose');
+      const downloadJSON = document.getElementById('downloadJSON');
+      const downloadXML = document.getElementById('downloadXML');
+
+      // Sample data
+      const sampleData = {
+        documentation: {
+          title: "Salesforce GitHub Test Documentation",
+          version: "1.0.0",
+          lastUpdated: "2026-01-23",
+          sections: [
+            {
+              id: "features",
+              name: "Features",
+              items: [
+                {
+                  id: "feature1",
+                  title: "Order Tracking API Integration",
+                  description: "Real-time order tracking capability",
+                  status: "active",
+                  releaseDate: "2025-12-01"
+                },
+                {
+                  id: "feature2",
+                  title: "User Permission Audit Logging",
+                  description: "Comprehensive audit logging system",
+                  status: "active",
+                  releaseDate: "2025-11-15"
+                }
+              ]
+            },
+            {
+              id: "bugfixes",
+              name: "Bug Fixes",
+              items: [
+                {
+                  id: "bugfix1",
+                  title: "Invoice Calculation Fix",
+                  description: "Resolved rounding inconsistencies",
+                  severity: "medium",
+                  fixedDate: "2025-10-20"
+                },
+                {
+                  id: "bugfix2",
+                  title: "Security Patch - Authentication",
+                  description: "Critical authentication vulnerability fix",
+                  severity: "critical",
+                  fixedDate: "2025-10-05"
+                }
+              ]
+            }
+          ]
+        }
+      };
+
+      // Open modal
+      if (downloadBtn && downloadModal) {
+        downloadBtn.addEventListener('click', () => {
+          downloadModal.classList.add('active');
+        });
+      }
+
+      // Close modal
+      if (modalClose && downloadModal) {
+        modalClose.addEventListener('click', () => {
+          downloadModal.classList.remove('active');
+        });
+      }
+
+      // Close modal when clicking outside
+      if (downloadModal) {
+        downloadModal.addEventListener('click', (e) => {
+          if (e.target === downloadModal) {
+            downloadModal.classList.remove('active');
+          }
+        });
+      }
+
+      // Download JSON
+      if (downloadJSON) {
+        downloadJSON.addEventListener('click', () => {
+          const dataStr = JSON.stringify(sampleData, null, 2);
+          const blob = new Blob([dataStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'salesforce-docs-data.json';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          downloadModal.classList.remove('active');
+        });
+      }
+
+      // Download XML
+      if (downloadXML) {
+        downloadXML.addEventListener('click', () => {
+          const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
+<documentation>
+  <title>${sampleData.documentation.title}</title>
+  <version>${sampleData.documentation.version}</version>
+  <lastUpdated>${sampleData.documentation.lastUpdated}</lastUpdated>
+  <sections>
+    ${sampleData.documentation.sections.map(section => `
+    <section id="${section.id}">
+      <name>${section.name}</name>
+      <items>
+        ${section.items.map(item => `
+        <item id="${item.id}">
+          <title>${item.title}</title>
+          <description>${item.description}</description>
+          ${item.status ? `<status>${item.status}</status>` : ''}
+          ${item.severity ? `<severity>${item.severity}</severity>` : ''}
+          ${item.releaseDate ? `<releaseDate>${item.releaseDate}</releaseDate>` : ''}
+          ${item.fixedDate ? `<fixedDate>${item.fixedDate}</fixedDate>` : ''}
+        </item>`).join('')}
+      </items>
+    </section>`).join('')}
+  </sections>
+</documentation>`;
+          const blob = new Blob([xmlData], { type: 'application/xml' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'salesforce-docs-data.xml';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          downloadModal.classList.remove('active');
+        });
+      }
     </script>
   </body>
 </html>
