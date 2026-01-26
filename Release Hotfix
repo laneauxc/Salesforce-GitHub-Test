@@ -1,0 +1,18 @@
+## Summary
+This pull request adds automated compliance reporting to the Salesforce sales pipeline application. It introduces dynamic checks for regulatory fields and sends automatic alerts to the compliance team when records are incomplete.
+
+## Business Value
+- Reduces audit risk and manual compliance checks.
+- Accelerates deal approval workflow.
+- Ensures timely compliance notifications to stakeholders.
+
+## Features
+- Trigger checks for missing regulatory data on new opportunities.
+- Automated summary reporting emailed weekly.
+- Custom alert settings for compliance users.
+
+## Risks & Mitigations
+- Minor risk of false positives; includes override capability.
+- Ensures no existing workflows are disrupted by new checks.
+
+Closes #42
