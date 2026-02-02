@@ -1,1 +1,13 @@
 docs/test-search.html
+
+# Astro build output
+astro-site/dist/
+astro-site/node_modules/
+astro-site/.astro/
+
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+build/
