@@ -1,8 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import NodeCard, { type Node } from './NodeCard';
 import EdgeRenderer, { type Edge } from './EdgeRenderer';
 import TopControls from './TopControls';
 import BottomControls from './BottomControls';
+
+interface HistoryState {
+  nodes: Node[];
+  edges: Edge[];
+}
 
 const initialNodes: Node[] = [
   { id: 'start', type: 'start', title: 'Start', x: 200, y: 300 },
@@ -19,8 +24,100 @@ export default function Canvas() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [draggedNode, setDraggedNode] = useState<string | null>(null);
   const [nodeCounter, setNodeCounter] = useState<number>(2);
+  const [zoom, setZoom] = useState<number>(1);
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  
+  // History for undo/redo
+  const [history, setHistory] = useState<HistoryState[]>([{ nodes: initialNodes, edges: initialEdges }]);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+  
   const canvasRef = useRef<HTMLDivElement>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
+
+  // Add current state to history
+  const addToHistory = (newNodes: Node[], newEdges: Edge[]) => {
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push({ nodes: newNodes, edges: newEdges });
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+  };
+
+  // Undo
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      setNodes(history[newIndex].nodes);
+      setEdges(history[newIndex].edges);
+    }
+  };
+
+  // Redo
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      setNodes(history[newIndex].nodes);
+      setEdges(history[newIndex].edges);
+    }
+  };
+
+  // Zoom in
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(prev + 0.1, 2));
+  };
+
+  // Zoom out
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(prev - 0.1, 0.5));
+  };
+
+  // Center view
+  const handleCenter = () => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
+  // Delete selected node
+  const handleDeleteNode = () => {
+    if (selectedNode) {
+      // Don't allow deleting the start node
+      if (selectedNode === 'start') return;
+      
+      const newNodes = nodes.filter(n => n.id !== selectedNode);
+      const newEdges = edges.filter(e => e.from !== selectedNode && e.to !== selectedNode);
+      
+      setNodes(newNodes);
+      setEdges(newEdges);
+      setSelectedNode(null);
+      addToHistory(newNodes, newEdges);
+    }
+  };
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Delete key
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNode) {
+        e.preventDefault();
+        handleDeleteNode();
+      }
+      // Ctrl/Cmd + Z for undo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      }
+      // Ctrl/Cmd + Shift + Z or Ctrl/Cmd + Y for redo
+      if (((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) || 
+          ((e.ctrlKey || e.metaKey) && e.key === 'y')) {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedNode, historyIndex, history]);
 
   const handleCanvasDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -29,8 +126,8 @@ export default function Canvas() {
 
     if (nodeType && canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = (e.clientX - rect.left - pan.x) / zoom;
+      const y = (e.clientY - rect.top - pan.y) / zoom;
 
       const newNode: Node = {
         id: `node-${nodeCounter}`,
@@ -40,8 +137,10 @@ export default function Canvas() {
         y,
       };
 
-      setNodes([...nodes, newNode]);
+      const newNodes = [...nodes, newNode];
+      setNodes(newNodes);
       setNodeCounter(nodeCounter + 1);
+      addToHistory(newNodes, edges);
     }
   };
 
@@ -54,8 +153,8 @@ export default function Canvas() {
     if (node && canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       dragOffset.current = {
-        x: e.clientX - rect.left - node.x,
-        y: e.clientY - rect.top - node.y,
+        x: (e.clientX - rect.left - pan.x) / zoom - node.x,
+        y: (e.clientY - rect.top - pan.y) / zoom - node.y,
       };
       setDraggedNode(nodeId);
     }
@@ -66,8 +165,8 @@ export default function Canvas() {
     
     if (canvasRef.current && draggedNode === nodeId) {
       const rect = canvasRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left - dragOffset.current.x;
-      const y = e.clientY - rect.top - dragOffset.current.y;
+      const x = (e.clientX - rect.left - pan.x) / zoom - dragOffset.current.x;
+      const y = (e.clientY - rect.top - pan.y) / zoom - dragOffset.current.y;
 
       setNodes((prevNodes) =>
         prevNodes.map((node) =>
@@ -78,7 +177,10 @@ export default function Canvas() {
   };
 
   const handleNodeDragEnd = () => {
-    setDraggedNode(null);
+    if (draggedNode) {
+      addToHistory(nodes, edges);
+      setDraggedNode(null);
+    }
   };
 
   return (
@@ -89,37 +191,57 @@ export default function Canvas() {
         ref={canvasRef}
         onDrop={handleCanvasDrop}
         onDragOver={handleCanvasDragOver}
-        className="w-full h-full relative"
+        className="w-full h-full relative overflow-hidden"
         style={{
           backgroundImage: `
             linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px)
           `,
-          backgroundSize: '20px 20px',
+          backgroundSize: `${20 * zoom}px ${20 * zoom}px`,
+          backgroundPosition: `${pan.x}px ${pan.y}px`,
         }}
       >
-        <EdgeRenderer edges={edges} nodes={nodes} />
-        
-        {nodes.map((node) => (
-          <NodeCard
-            key={node.id}
-            node={node}
-            selected={selectedNode === node.id}
-            onSelect={setSelectedNode}
-            onDragStart={handleNodeDragStart}
-            onDrag={handleNodeDrag}
-            onDragEnd={handleNodeDragEnd}
-          />
-        ))}
+        <div 
+          style={{ 
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            transformOrigin: '0 0',
+          }}
+        >
+          <EdgeRenderer edges={edges} nodes={nodes} />
+          
+          {nodes.map((node) => (
+            <NodeCard
+              key={node.id}
+              node={node}
+              selected={selectedNode === node.id}
+              onSelect={setSelectedNode}
+              onDragStart={handleNodeDragStart}
+              onDrag={handleNodeDrag}
+              onDragEnd={handleNodeDragEnd}
+            />
+          ))}
+        </div>
       </div>
 
       <BottomControls
-        onZoomIn={() => console.log('Zoom in')}
-        onZoomOut={() => console.log('Zoom out')}
-        onCenter={() => console.log('Center')}
-        onUndo={() => console.log('Undo')}
-        onRedo={() => console.log('Redo')}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onCenter={handleCenter}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
       />
+
+      {/* Zoom indicator */}
+      <div className="absolute bottom-8 right-4 bg-white px-3 py-2 rounded-lg shadow-lg border border-gray-200 text-sm text-gray-600">
+        {Math.round(zoom * 100)}%
+      </div>
+
+      {/* Help text */}
+      {selectedNode && (
+        <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
+          Press <kbd className="px-2 py-1 bg-white border border-blue-300 rounded">Delete</kbd> to remove node
+        </div>
+      )}
     </div>
   );
 }
