@@ -108,17 +108,17 @@ export default function Canvas() {
         cancelConnection();
       }
       // Delete key
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNode) {
+      else if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNode) {
         e.preventDefault();
         handleDeleteNode();
       }
       // Ctrl/Cmd + Z for undo
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+      else if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
         handleUndo();
       }
       // Ctrl/Cmd + Shift + Z or Ctrl/Cmd + Y for redo
-      if (((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) || 
+      else if (((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) || 
           ((e.ctrlKey || e.metaKey) && e.key === 'y')) {
         e.preventDefault();
         handleRedo();
@@ -199,17 +199,28 @@ export default function Canvas() {
       if (!connectionStart) {
         // Start connection
         setConnectionStart(nodeId);
-      } else if (connectionStart !== nodeId) {
-        // Complete connection
-        const newEdge: Edge = {
-          id: `edge-${edgeCounter}`,
-          from: connectionStart,
-          to: nodeId,
-        };
-        const newEdges = [...edges, newEdge];
-        setEdges(newEdges);
-        setEdgeCounter(edgeCounter + 1);
-        addToHistory(nodes, newEdges);
+      } else if (connectionStart === nodeId) {
+        // Clicking the same node cancels the connection
+        setConnectionStart(null);
+        setIsConnecting(false);
+      } else {
+        // Check if connection already exists
+        const connectionExists = edges.some(
+          edge => edge.from === connectionStart && edge.to === nodeId
+        );
+        
+        if (!connectionExists) {
+          // Complete connection
+          const newEdge: Edge = {
+            id: `edge-${edgeCounter}`,
+            from: connectionStart,
+            to: nodeId,
+          };
+          const newEdges = [...edges, newEdge];
+          setEdges(newEdges);
+          setEdgeCounter(edgeCounter + 1);
+          addToHistory(nodes, newEdges);
+        }
         
         // Reset connection state
         setConnectionStart(null);
