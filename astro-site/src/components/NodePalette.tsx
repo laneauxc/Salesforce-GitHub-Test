@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from './Icon';
 
 interface NodeType {
   type: string;
@@ -15,33 +16,33 @@ const nodeGroups: NodeGroup[] = [
   {
     title: 'Core',
     nodes: [
-      { type: 'agent', label: 'Agent', icon: '🤖' },
-      { type: 'classify', label: 'Classify', icon: '🔍' },
-      { type: 'end', label: 'End', icon: '🏁' },
-      { type: 'note', label: 'Note', icon: '📝' },
+      { type: 'agent', label: 'Agent', icon: 'agent' },
+      { type: 'classify', label: 'Classify', icon: 'classify' },
+      { type: 'end', label: 'End', icon: 'end' },
+      { type: 'note', label: 'Note', icon: 'note' },
     ],
   },
   {
     title: 'Tools',
     nodes: [
-      { type: 'file-search', label: 'File Search', icon: '📄' },
-      { type: 'guardrails', label: 'Guardrails', icon: '🛡️' },
-      { type: 'mcp', label: 'MCP', icon: '🔌' },
+      { type: 'file-search', label: 'File Search', icon: 'file-search' },
+      { type: 'guardrails', label: 'Guardrails', icon: 'guardrails' },
+      { type: 'mcp', label: 'MCP', icon: 'mcp' },
     ],
   },
   {
     title: 'Logic',
     nodes: [
-      { type: 'if-else', label: 'If / else', icon: '🔀' },
-      { type: 'while', label: 'While', icon: '🔄' },
-      { type: 'user-approval', label: 'User approval', icon: '✋' },
+      { type: 'if-else', label: 'If / else', icon: 'if-else' },
+      { type: 'while', label: 'While', icon: 'while' },
+      { type: 'user-approval', label: 'User approval', icon: 'user-approval' },
     ],
   },
   {
     title: 'Data',
     nodes: [
-      { type: 'transform', label: 'Transform', icon: '🔧' },
-      { type: 'set-state', label: 'Set state', icon: '💾' },
+      { type: 'transform', label: 'Transform', icon: 'transform' },
+      { type: 'set-state', label: 'Set state', icon: 'set-state' },
     ],
   },
 ];
@@ -75,7 +76,7 @@ export default function NodePalette({ onNodeDragStart }: NodePaletteProps) {
                   onDragStart={(e) => handleDragStart(e, node.type, node.label)}
                   className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-move hover:border-blue-300 hover:bg-blue-50 transition-colors text-sm"
                 >
-                  <span className="text-base">{node.icon}</span>
+                  <Icon name={node.icon} className="w-4 h-4 text-gray-600" />
                   <span className="text-gray-700">{node.label}</span>
                 </div>
               ))}

@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from './Icon';
 
 export interface Node {
   id: string;
@@ -26,25 +27,6 @@ export default function NodeCard({
   onDrag,
   onDragEnd,
 }: NodeCardProps) {
-  const getIcon = (type: string) => {
-    const icons: Record<string, string> = {
-      start: '▶️',
-      agent: '🤖',
-      classify: '🔍',
-      end: '🏁',
-      note: '📝',
-      'file-search': '📄',
-      guardrails: '🛡️',
-      mcp: '🔌',
-      'if-else': '🔀',
-      while: '🔄',
-      'user-approval': '✋',
-      transform: '🔧',
-      'set-state': '💾',
-    };
-    return icons[type] || '📦';
-  };
-
   return (
     <div
       draggable={node.type !== 'start'}
@@ -65,7 +47,9 @@ export default function NodeCard({
       }}
     >
       <div className="flex flex-col items-center gap-2">
-        <span className="text-2xl">{getIcon(node.type)}</span>
+        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+          <Icon name={node.type} className="w-6 h-6 text-blue-600" />
+        </div>
         <div className="text-center">
           <div className="font-semibold text-sm text-gray-900">{node.title}</div>
           {node.subtitle && (

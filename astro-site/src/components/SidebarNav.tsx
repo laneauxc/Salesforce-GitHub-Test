@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from './Icon';
 
 interface NavItem {
   icon: string;
@@ -42,7 +43,7 @@ export default function SidebarNav({ sections }: SidebarNavProps) {
                     }
                   `}
                 >
-                  <span className="text-lg">{item.icon}</span>
+                  <Icon name={item.icon} className="w-5 h-5" />
                   <span>{item.label}</span>
                 </button>
               ))}
