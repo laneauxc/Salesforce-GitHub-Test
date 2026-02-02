@@ -2,7 +2,7 @@
 import NodePalette from '../components/NodePalette';
 import Canvas from '../components/Canvas';
 
-const baseUrl = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 ---
 
 <!DOCTYPE html>
