@@ -1,0 +1,66 @@
+---
+import SidebarNav from '../components/SidebarNav';
+import PromptCreateCard from '../components/PromptCreateCard';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', selected: true },
+      { icon: 'agent-builder', label: 'Agent Builder' },
+      { icon: 'audio', label: 'Audio' },
+      { icon: 'images', label: 'Images' },
+      { icon: 'videos', label: 'Videos' },
+      { icon: 'assistants', label: 'Assistants' },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage' },
+      { icon: 'api-keys', label: 'API keys' },
+      { icon: 'apps', label: 'Apps' },
+      { icon: 'logs', label: 'Logs' },
+      { icon: 'storage', label: 'Storage' },
+      { icon: 'batches', label: 'Batches' },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation' },
+      { icon: 'fine-tuning', label: 'Fine-tuning' },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Chat Prompt</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 flex items-center justify-center p-8">
+        <PromptCreateCard 
+          client:load
+          onCreateClick={() => {
+            window.location.href = `${baseUrl}agent-builder/`;
+          }}
+        />
+      </main>
+    </div>
+  </body>
+</html>

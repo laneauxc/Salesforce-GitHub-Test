@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern minimal styles */
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
