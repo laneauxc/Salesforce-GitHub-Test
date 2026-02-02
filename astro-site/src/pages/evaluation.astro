@@ -1,0 +1,437 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', selected: true, href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evaluation - Optimize</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-6xl mx-auto p-8">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900 mb-2">Model Evaluation</h1>
+              <p class="text-gray-600">Test and compare model performance across different tasks</p>
+            </div>
+            <button id="startEvalBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              New Evaluation
+            </button>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Total Evals</span>
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">18</div>
+              <p class="text-sm text-gray-500 mt-1">All time</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Avg Accuracy</span>
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">92.4%</div>
+              <p class="text-sm text-green-600 mt-1">+2.1% improvement</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Active Tests</span>
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">2</div>
+              <p class="text-sm text-orange-600 mt-1">Running now</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Test Cases</span>
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">1,247</div>
+              <p class="text-sm text-gray-500 mt-1">Total executed</p>
+            </div>
+          </div>
+
+          <!-- Model Comparison -->
+          <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Model Performance Comparison</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accuracy</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precision</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recall</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">F1 Score</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Latency</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-blue-500 mr-3"></div>
+                        <span class="text-sm font-medium text-gray-900">GPT-4</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <span class="text-sm text-gray-900">94.2%</span>
+                        <div class="ml-2 w-24 bg-gray-200 rounded-full h-2">
+                          <div class="bg-green-500 h-2 rounded-full" style="width: 94.2%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">93.8%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">94.5%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.941</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1.2s</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-purple-500 mr-3"></div>
+                        <span class="text-sm font-medium text-gray-900">GPT-4 Turbo</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <span class="text-sm text-gray-900">93.1%</span>
+                        <div class="ml-2 w-24 bg-gray-200 rounded-full h-2">
+                          <div class="bg-green-500 h-2 rounded-full" style="width: 93.1%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">92.7%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">93.4%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.930</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.8s</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-green-500 mr-3"></div>
+                        <span class="text-sm font-medium text-gray-900">GPT-3.5 Turbo</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <span class="text-sm text-gray-900">89.5%</span>
+                        <div class="ml-2 w-24 bg-gray-200 rounded-full h-2">
+                          <div class="bg-yellow-500 h-2 rounded-full" style="width: 89.5%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">88.9%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">90.1%</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.895</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.4s</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Evaluations -->
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 class="text-lg font-semibold text-gray-900">Recent Evaluations</h2>
+              <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm">
+                <option>All Types</option>
+                <option>Classification</option>
+                <option>Generation</option>
+                <option>Summarization</option>
+                <option>Q&A</option>
+              </select>
+            </div>
+            <div class="divide-y divide-gray-200">
+              <!-- Running Evaluation -->
+              <div class="px-6 py-4 hover:bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-orange-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">Sentiment Analysis - GPT-4</h3>
+                      <p class="text-sm text-gray-500">Started 5 minutes ago • Classification</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">Running</span>
+                </div>
+                <div class="ml-13 space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Progress</span>
+                    <span class="text-gray-900 font-medium">234 / 500 test cases</span>
+                  </div>
+                  <div class="bg-gray-200 rounded-full h-2">
+                    <div class="bg-orange-500 h-2 rounded-full" style="width: 46.8%"></div>
+                  </div>
+                  <div class="flex items-center gap-4 text-xs text-gray-500">
+                    <span>Current accuracy: 91.2%</span>
+                    <span>•</span>
+                    <span>ETA: 3 minutes</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Completed Evaluation -->
+              <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">Question Answering - GPT-4 Turbo</h3>
+                      <p class="text-sm text-gray-500">Completed 2 hours ago • Q&A</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Completed</span>
+                </div>
+                <div class="ml-13 grid grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span class="text-gray-600">Accuracy</span>
+                    <p class="text-gray-900 font-medium">93.1%</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Precision</span>
+                    <p class="text-gray-900 font-medium">92.7%</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Test Cases</span>
+                    <p class="text-gray-900 font-medium">300</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Duration</span>
+                    <p class="text-gray-900 font-medium">8m 42s</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Another Completed -->
+              <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">Text Summarization - GPT-3.5</h3>
+                      <p class="text-sm text-gray-500">Completed yesterday • Summarization</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Completed</span>
+                </div>
+                <div class="ml-13 grid grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span class="text-gray-600">Accuracy</span>
+                    <p class="text-gray-900 font-medium">89.5%</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Precision</span>
+                    <p class="text-gray-900 font-medium">88.9%</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Test Cases</span>
+                    <p class="text-gray-900 font-medium">200</p>
+                  </div>
+                  <div>
+                    <span class="text-gray-600">Duration</span>
+                    <p class="text-gray-900 font-medium">3m 15s</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Start Evaluation Modal -->
+    <div id="evalModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-gray-900">Start New Evaluation</h2>
+          <button id="closeEvalModal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form id="evalForm" class="p-6 space-y-6">
+          <div>
+            <label for="evalName" class="block text-sm font-medium text-gray-700 mb-2">Evaluation Name *</label>
+            <input
+              type="text"
+              id="evalName"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="e.g., Sentiment Analysis Test"
+            />
+          </div>
+
+          <div>
+            <label for="evalModel" class="block text-sm font-medium text-gray-700 mb-2">Model *</label>
+            <select
+              id="evalModel"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select model</option>
+              <option value="gpt-4">GPT-4</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="evalType" class="block text-sm font-medium text-gray-700 mb-2">Evaluation Type *</label>
+            <select
+              id="evalType"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select type</option>
+              <option value="classification">Classification</option>
+              <option value="generation">Generation</option>
+              <option value="summarization">Summarization</option>
+              <option value="qa">Question Answering</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="testDataset" class="block text-sm font-medium text-gray-700 mb-2">Test Dataset *</label>
+            <select
+              id="testDataset"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select dataset</option>
+              <option value="custom-1">Custom Dataset 1 (500 samples)</option>
+              <option value="custom-2">Custom Dataset 2 (1000 samples)</option>
+              <option value="upload">Upload new dataset</option>
+            </select>
+          </div>
+
+          <div class="flex gap-3 pt-4 border-t border-gray-200">
+            <button
+              type="submit"
+              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Start Evaluation
+            </button>
+            <button
+              type="button"
+              id="cancelEval"
+              class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const startEvalBtn = document.getElementById('startEvalBtn');
+      const evalModal = document.getElementById('evalModal');
+      const closeEvalModal = document.getElementById('closeEvalModal');
+      const cancelEval = document.getElementById('cancelEval');
+      const evalForm = document.getElementById('evalForm') as HTMLFormElement;
+
+      startEvalBtn?.addEventListener('click', () => {
+        evalModal?.classList.remove('hidden');
+      });
+
+      closeEvalModal?.addEventListener('click', () => {
+        evalModal?.classList.add('hidden');
+      });
+
+      cancelEval?.addEventListener('click', () => {
+        evalModal?.classList.add('hidden');
+      });
+
+      evalForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const evalName = (document.getElementById('evalName') as HTMLInputElement).value;
+        const evalModel = (document.getElementById('evalModel') as HTMLSelectElement).value;
+        
+        alert(`Evaluation "${evalName}" started with model ${evalModel}. You can monitor progress below.`);
+        evalModal?.classList.add('hidden');
+        evalForm?.reset();
+      });
+    </script>
+  </body>
+</html>

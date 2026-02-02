@@ -1,0 +1,322 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', selected: true, href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usage - Manage</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-7xl mx-auto p-8">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Usage</h1>
+            <p class="text-gray-600">Monitor your API usage, costs, and performance metrics</p>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Total Requests</span>
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900" id="totalRequests">0</div>
+              <p class="text-sm text-green-600 mt-1">+12% from last week</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Total Tokens</span>
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900" id="totalTokens">0</div>
+              <p class="text-sm text-green-600 mt-1">+8% from last week</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Total Cost</span>
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900" id="totalCost">$0.00</div>
+              <p class="text-sm text-green-600 mt-1">+5% from last week</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Avg Response Time</span>
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">1.2s</div>
+              <p class="text-sm text-red-600 mt-1">+0.1s from last week</p>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Requests Chart -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <h2 class="text-lg font-semibold text-gray-900 mb-4">API Requests (Last 7 Days)</h2>
+              <canvas id="requestsChart"></canvas>
+            </div>
+
+            <!-- Cost Chart -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <h2 class="text-lg font-semibold text-gray-900 mb-4">Daily Cost (Last 7 Days)</h2>
+              <canvas id="costChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Tokens Chart -->
+          <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Token Usage (Last 7 Days)</h2>
+            <canvas id="tokensChart"></canvas>
+          </div>
+
+          <!-- Usage by Model -->
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900">Usage by Model</h2>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requests</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Tokens/Request</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-blue-500 mr-3"></div>
+                        <span class="text-sm font-medium text-gray-900">GPT-4</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1,245</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">625,000</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$12.50</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">502</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-purple-500 mr-3"></div>
+                        <span class="text-sm font-medium text-gray-900">GPT-4 Turbo</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">456</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">228,000</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$4.56</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">500</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="w-2 h-2 rounded-full bg-green-500 mr-3"></div>
+                        <span class="text-sm font-medium text-gray-900">GPT-3.5 Turbo</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2,890</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">867,000</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1.73</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">300</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      import { dataStore } from '../utils/dataStore';
+
+      const metrics = dataStore.getUsageMetrics();
+      
+      // Calculate totals
+      const totalRequests = metrics.reduce((sum, m) => sum + m.requests, 0);
+      const totalTokens = metrics.reduce((sum, m) => sum + m.tokens, 0);
+      const totalCost = metrics.reduce((sum, m) => sum + m.cost, 0);
+
+      // Update summary cards
+      document.getElementById('totalRequests')!.textContent = totalRequests.toLocaleString();
+      document.getElementById('totalTokens')!.textContent = totalTokens.toLocaleString();
+      document.getElementById('totalCost')!.textContent = `$${totalCost.toFixed(2)}`;
+
+      // Prepare chart data
+      const labels = metrics.map(m => {
+        const date = new Date(m.date);
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      });
+      const requestsData = metrics.map(m => m.requests);
+      const tokensData = metrics.map(m => m.tokens);
+      const costData = metrics.map(m => m.cost);
+
+      // Requests Chart
+      const requestsCtx = document.getElementById('requestsChart') as HTMLCanvasElement;
+      new (window as any).Chart(requestsCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Requests',
+            data: requestsData,
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          }
+        }
+      });
+
+      // Cost Chart
+      const costCtx = document.getElementById('costChart') as HTMLCanvasElement;
+      new (window as any).Chart(costCtx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Cost ($)',
+            data: costData,
+            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+            borderColor: 'rgb(34, 197, 94)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value: any) {
+                  return '$' + value.toFixed(2);
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Tokens Chart
+      const tokensCtx = document.getElementById('tokensChart') as HTMLCanvasElement;
+      new (window as any).Chart(tokensCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Tokens',
+            data: tokensData,
+            borderColor: 'rgb(168, 85, 247)',
+            backgroundColor: 'rgba(168, 85, 247, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value: any) {
+                  return (value / 1000).toFixed(0) + 'K';
+                }
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

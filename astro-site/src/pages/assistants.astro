@@ -1,0 +1,338 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', selected: true, href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistants - Manage</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-6xl mx-auto p-8">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900 mb-2">Assistants</h1>
+              <p class="text-gray-600">Create and manage AI assistants with custom instructions and tools</p>
+            </div>
+            <button id="createAssistantBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Create Assistant
+            </button>
+          </div>
+
+          <!-- Assistants Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="assistantsList">
+            <!-- Assistants will be loaded here -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create/Edit Assistant Modal -->
+    <div id="assistantModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-2xl font-semibold text-gray-900" id="modalTitle">Create Assistant</h2>
+          <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form id="assistantForm" class="p-6 space-y-6">
+          <input type="hidden" id="assistantId" />
+          
+          <div>
+            <label for="assistantName" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+            <input
+              type="text"
+              id="assistantName"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="e.g., Code Helper, Research Assistant"
+            />
+          </div>
+
+          <div>
+            <label for="assistantDescription" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <input
+              type="text"
+              id="assistantDescription"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Brief description of what this assistant does"
+            />
+          </div>
+
+          <div>
+            <label for="assistantModel" class="block text-sm font-medium text-gray-700 mb-2">Model *</label>
+            <select
+              id="assistantModel"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="gpt-4">GPT-4</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="assistantInstructions" class="block text-sm font-medium text-gray-700 mb-2">Instructions *</label>
+            <textarea
+              id="assistantInstructions"
+              required
+              rows="4"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="System instructions that define the assistant's behavior..."
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tools</label>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" value="code_interpreter" class="tool-checkbox rounded text-blue-600 focus:ring-blue-500" />
+                <span class="text-sm text-gray-700">Code Interpreter</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" value="file_search" class="tool-checkbox rounded text-blue-600 focus:ring-blue-500" />
+                <span class="text-sm text-gray-700">File Search</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" value="function" class="tool-checkbox rounded text-blue-600 focus:ring-blue-500" />
+                <span class="text-sm text-gray-700">Function Calling</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex gap-3 pt-4 border-t border-gray-200">
+            <button
+              type="submit"
+              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Save Assistant
+            </button>
+            <button
+              type="button"
+              id="cancelBtn"
+              class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      import { dataStore } from '../utils/dataStore';
+      import type { Assistant } from '../utils/dataStore';
+
+      let editingAssistantId: string | null = null;
+
+      const assistantsList = document.getElementById('assistantsList');
+      const assistantModal = document.getElementById('assistantModal');
+      const assistantForm = document.getElementById('assistantForm') as HTMLFormElement;
+      const createAssistantBtn = document.getElementById('createAssistantBtn');
+      const closeModal = document.getElementById('closeModal');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const modalTitle = document.getElementById('modalTitle');
+
+      function loadAssistants() {
+        const assistants = dataStore.getAssistants();
+        
+        if (!assistantsList) return;
+        
+        if (assistants.length === 0) {
+          assistantsList.innerHTML = `
+            <div class="col-span-2 text-center py-12 text-gray-500">
+              No assistants yet. Click "Create Assistant" to get started.
+            </div>
+          `;
+          return;
+        }
+
+        assistantsList.innerHTML = assistants.map(assistant => `
+          <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900">${assistant.name}</h3>
+                  <p class="text-sm text-gray-500">${assistant.model}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="editAssistant('${assistant.id}')" class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button onclick="deleteAssistant('${assistant.id}')" class="p-1.5 text-gray-400 hover:text-red-600 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <p class="text-sm text-gray-600 mb-4">${assistant.description}</p>
+            
+            <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+              <p class="text-xs text-gray-500 mb-1">Instructions:</p>
+              <p class="text-sm text-gray-700 line-clamp-2">${assistant.instructions}</p>
+            </div>
+            
+            <div class="flex items-center gap-2 flex-wrap mb-4">
+              ${assistant.tools.map(tool => `
+                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">${tool}</span>
+              `).join('')}
+            </div>
+            
+            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+              <span class="text-xs text-gray-500">Created ${new Date(assistant.createdAt).toLocaleDateString()}</span>
+              <button onclick="useAssistant('${assistant.id}')" class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+                Use Assistant
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      createAssistantBtn?.addEventListener('click', () => {
+        editingAssistantId = null;
+        assistantForm?.reset();
+        modalTitle!.textContent = 'Create Assistant';
+        assistantModal?.classList.remove('hidden');
+      });
+
+      closeModal?.addEventListener('click', () => {
+        assistantModal?.classList.add('hidden');
+      });
+
+      cancelBtn?.addEventListener('click', () => {
+        assistantModal?.classList.add('hidden');
+      });
+
+      assistantForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = (document.getElementById('assistantName') as HTMLInputElement).value;
+        const description = (document.getElementById('assistantDescription') as HTMLInputElement).value;
+        const model = (document.getElementById('assistantModel') as HTMLSelectElement).value;
+        const instructions = (document.getElementById('assistantInstructions') as HTMLTextAreaElement).value;
+        
+        const toolCheckboxes = document.querySelectorAll('.tool-checkbox:checked') as NodeListOf<HTMLInputElement>;
+        const tools = Array.from(toolCheckboxes).map(cb => cb.value);
+
+        if (editingAssistantId) {
+          dataStore.updateAssistant(editingAssistantId, {
+            name,
+            description,
+            model,
+            instructions,
+            tools
+          });
+        } else {
+          dataStore.createAssistant({
+            name,
+            description,
+            model,
+            instructions,
+            tools
+          });
+        }
+
+        assistantModal?.classList.add('hidden');
+        loadAssistants();
+      });
+
+      (window as any).editAssistant = (id: string) => {
+        const assistant = dataStore.getAssistant(id);
+        if (!assistant) return;
+
+        editingAssistantId = id;
+        (document.getElementById('assistantName') as HTMLInputElement).value = assistant.name;
+        (document.getElementById('assistantDescription') as HTMLInputElement).value = assistant.description;
+        (document.getElementById('assistantModel') as HTMLSelectElement).value = assistant.model;
+        (document.getElementById('assistantInstructions') as HTMLTextAreaElement).value = assistant.instructions;
+
+        document.querySelectorAll('.tool-checkbox').forEach(cb => {
+          (cb as HTMLInputElement).checked = false;
+        });
+        assistant.tools.forEach(tool => {
+          const checkbox = document.querySelector(`.tool-checkbox[value="${tool}"]`) as HTMLInputElement;
+          if (checkbox) checkbox.checked = true;
+        });
+
+        modalTitle!.textContent = 'Edit Assistant';
+        assistantModal?.classList.remove('hidden');
+      };
+
+      (window as any).deleteAssistant = (id: string) => {
+        if (confirm('Are you sure you want to delete this assistant?')) {
+          dataStore.deleteAssistant(id);
+          loadAssistants();
+        }
+      };
+
+      (window as any).useAssistant = (id: string) => {
+        alert('This would open a chat with the assistant. Navigate to chat page to use assistants.');
+      };
+
+      loadAssistants();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,296 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', selected: true, href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio - Create</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-5xl mx-auto p-8">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Audio</h1>
+          <p class="text-gray-600 mb-8">Record audio, upload files, or convert speech to text</p>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Record Audio Card -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-900">Record Audio</h2>
+              </div>
+              <p class="text-gray-600 mb-6">Use your microphone to record audio directly</p>
+              
+              <div class="space-y-4">
+                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                  <div class="text-4xl font-mono text-gray-700 mb-2" id="recordingTime">00:00</div>
+                  <div class="text-sm text-gray-500">Recording duration</div>
+                </div>
+                
+                <button
+                  id="recordButton"
+                  class="w-full px-6 py-3 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors shadow-sm flex items-center justify-center gap-2"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="6" />
+                  </svg>
+                  <span>Start Recording</span>
+                </button>
+                
+                <button
+                  id="stopButton"
+                  class="w-full px-6 py-3 bg-gray-300 text-gray-500 rounded-lg font-medium cursor-not-allowed"
+                  disabled
+                >
+                  Stop Recording
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Audio Card -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-900">Upload Audio</h2>
+              </div>
+              <p class="text-gray-600 mb-6">Upload audio files for transcription or processing</p>
+              
+              <div class="space-y-4">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" id="dropZone">
+                  <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p class="text-gray-700 font-medium mb-1">Drop audio files here or click to browse</p>
+                  <p class="text-sm text-gray-500">Supports MP3, WAV, M4A, FLAC (Max 25MB)</p>
+                </div>
+                <input type="file" id="fileInput" accept="audio/*" class="hidden" />
+                
+                <button
+                  id="uploadButton"
+                  class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Select File
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recordings List -->
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="text-xl font-semibold text-gray-900">Recent Recordings</h2>
+            </div>
+            <div class="divide-y divide-gray-200" id="recordingsList">
+              <div class="px-6 py-4 text-center text-gray-500">
+                No recordings yet. Start recording or upload a file to begin.
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      let mediaRecorder: MediaRecorder | null = null;
+      let audioChunks: Blob[] = [];
+      let recordingInterval: number | null = null;
+      let recordingSeconds = 0;
+
+      const recordButton = document.getElementById('recordButton');
+      const stopButton = document.getElementById('stopButton');
+      const recordingTime = document.getElementById('recordingTime');
+      const fileInput = document.getElementById('fileInput');
+      const uploadButton = document.getElementById('uploadButton');
+      const dropZone = document.getElementById('dropZone');
+      const recordingsList = document.getElementById('recordingsList');
+
+      // Recording functionality
+      recordButton?.addEventListener('click', async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          recordingSeconds = 0;
+
+          mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            addRecordingToList(`Recording ${new Date().toLocaleTimeString()}`, recordingSeconds, audioBlob.size, audioUrl);
+            
+            stream.getTracks().forEach(track => track.stop());
+            if (recordingInterval) clearInterval(recordingInterval);
+          };
+
+          mediaRecorder.start();
+          
+          recordButton.classList.add('hidden');
+          stopButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+          stopButton.classList.add('bg-gray-700', 'text-white', 'hover:bg-gray-800', 'cursor-pointer');
+          stopButton.removeAttribute('disabled');
+
+          // Start timer
+          recordingInterval = setInterval(() => {
+            recordingSeconds++;
+            const mins = Math.floor(recordingSeconds / 60);
+            const secs = recordingSeconds % 60;
+            recordingTime!.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+          }, 1000);
+
+        } catch (err) {
+          alert('Error accessing microphone. Please ensure you have granted permission.');
+          console.error('Error accessing microphone:', err);
+        }
+      });
+
+      stopButton?.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          
+          recordButton.classList.remove('hidden');
+          stopButton.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+          stopButton.classList.remove('bg-gray-700', 'text-white', 'hover:bg-gray-800', 'cursor-pointer');
+          stopButton.setAttribute('disabled', 'true');
+          
+          recordingTime!.textContent = '00:00';
+          recordingSeconds = 0;
+        }
+      });
+
+      // Upload functionality
+      uploadButton?.addEventListener('click', () => {
+        fileInput?.click();
+      });
+
+      fileInput?.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          handleFileUpload(file);
+        }
+      });
+
+      dropZone?.addEventListener('click', () => {
+        fileInput?.click();
+      });
+
+      dropZone?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-400', 'bg-blue-50');
+      });
+
+      dropZone?.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+      });
+
+      dropZone?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        
+        const file = e.dataTransfer?.files[0];
+        if (file && file.type.startsWith('audio/')) {
+          handleFileUpload(file);
+        }
+      });
+
+      function handleFileUpload(file: File) {
+        const url = URL.createObjectURL(file);
+        addRecordingToList(file.name, 0, file.size, url);
+      }
+
+      function addRecordingToList(name: string, duration: number, size: number, url: string) {
+        const emptyMessage = recordingsList?.querySelector('div');
+        if (emptyMessage?.textContent?.includes('No recordings')) {
+          recordingsList!.innerHTML = '';
+        }
+
+        const recordingItem = document.createElement('div');
+        recordingItem.className = 'px-6 py-4 hover:bg-gray-50';
+        recordingItem.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4 flex-1">
+              <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center">
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-900">${name}</h3>
+                <p class="text-sm text-gray-500">
+                  ${duration > 0 ? `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')} • ` : ''}${(size / 1024 / 1024).toFixed(2)} MB • ${new Date().toLocaleString()}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <audio controls class="h-8">
+                <source src="${url}" type="audio/wav">
+              </audio>
+              <button class="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        recordingsList?.prepend(recordingItem);
+      }
+    </script>
+  </body>
+</html>

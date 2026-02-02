@@ -1,0 +1,307 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', selected: true, href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Keys - Manage</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-5xl mx-auto p-8">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900 mb-2">API Keys</h1>
+              <p class="text-gray-600">Manage your API keys for accessing the service</p>
+            </div>
+            <button id="createKeyBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Create New Key
+            </button>
+          </div>
+
+          <!-- Security Warning -->
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8 flex items-start gap-3">
+            <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <h3 class="font-semibold text-yellow-900 mb-1">Keep your API keys secure</h3>
+              <p class="text-sm text-yellow-800">Never share your API keys or commit them to version control. Treat them like passwords.</p>
+            </div>
+          </div>
+
+          <!-- API Keys List -->
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900">Your API Keys</h2>
+            </div>
+            <div class="divide-y divide-gray-200" id="apiKeysList">
+              <!-- Keys will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create Key Modal -->
+    <div id="createKeyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-md w-full">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">Create New API Key</h2>
+        </div>
+        
+        <form id="createKeyForm" class="p-6 space-y-4">
+          <div>
+            <label for="keyName" class="block text-sm font-medium text-gray-700 mb-2">Key Name *</label>
+            <input
+              type="text"
+              id="keyName"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="e.g., Production Server, Development App"
+            />
+            <p class="text-xs text-gray-500 mt-1">A descriptive name to help you identify this key</p>
+          </div>
+
+          <div class="flex gap-3 pt-4">
+            <button
+              type="submit"
+              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create Key
+            </button>
+            <button
+              type="button"
+              id="cancelCreateBtn"
+              class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Show New Key Modal -->
+    <div id="showKeyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-lg w-full">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">API Key Created</h2>
+        </div>
+        
+        <div class="p-6 space-y-4">
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p class="text-sm text-yellow-800">
+                <strong>Important:</strong> Copy this key now. For security reasons, you won't be able to see it again.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Your API Key</label>
+            <div class="flex gap-2">
+              <input
+                type="text"
+                id="newKeyValue"
+                readonly
+                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 font-mono text-sm"
+              />
+              <button
+                id="copyKeyBtn"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+
+          <button
+            id="closeShowKeyBtn"
+            class="w-full px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      import { dataStore } from '../utils/dataStore';
+
+      const apiKeysList = document.getElementById('apiKeysList');
+      const createKeyBtn = document.getElementById('createKeyBtn');
+      const createKeyModal = document.getElementById('createKeyModal');
+      const createKeyForm = document.getElementById('createKeyForm') as HTMLFormElement;
+      const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+      const showKeyModal = document.getElementById('showKeyModal');
+      const newKeyValue = document.getElementById('newKeyValue') as HTMLInputElement;
+      const copyKeyBtn = document.getElementById('copyKeyBtn');
+      const closeShowKeyBtn = document.getElementById('closeShowKeyBtn');
+
+      function loadApiKeys() {
+        const keys = dataStore.getApiKeys();
+        
+        if (!apiKeysList) return;
+        
+        if (keys.length === 0) {
+          apiKeysList.innerHTML = `
+            <div class="px-6 py-12 text-center text-gray-500">
+              No API keys yet. Click "Create New Key" to get started.
+            </div>
+          `;
+          return;
+        }
+
+        apiKeysList.innerHTML = keys.map(key => {
+          const maskedKey = key.key.substring(0, 15) + '...';
+          const createdDate = new Date(key.createdAt).toLocaleDateString();
+          const lastUsedDate = key.lastUsed ? new Date(key.lastUsed).toLocaleDateString() : 'Never';
+          
+          return `
+            <div class="px-6 py-4 hover:bg-gray-50">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-3 mb-2">
+                    <h3 class="font-medium text-gray-900">${key.name}</h3>
+                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Active</span>
+                  </div>
+                  <div class="flex items-center gap-4 text-sm text-gray-500">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                      </svg>
+                      <span class="font-mono">${maskedKey}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>Created ${createdDate}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Last used ${lastUsedDate}</span>
+                    </div>
+                  </div>
+                </div>
+                <button onclick="deleteKey('${key.id}')" class="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      createKeyBtn?.addEventListener('click', () => {
+        createKeyModal?.classList.remove('hidden');
+      });
+
+      cancelCreateBtn?.addEventListener('click', () => {
+        createKeyModal?.classList.add('hidden');
+        createKeyForm?.reset();
+      });
+
+      createKeyForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const name = (document.getElementById('keyName') as HTMLInputElement).value;
+        const newKey = dataStore.createApiKey(name);
+        
+        createKeyModal?.classList.add('hidden');
+        createKeyForm?.reset();
+        
+        newKeyValue.value = newKey.key;
+        showKeyModal?.classList.remove('hidden');
+        
+        loadApiKeys();
+      });
+
+      copyKeyBtn?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(newKeyValue.value);
+          copyKeyBtn!.textContent = 'Copied!';
+          copyKeyBtn!.classList.add('bg-green-600');
+          copyKeyBtn!.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+          
+          setTimeout(() => {
+            copyKeyBtn!.textContent = 'Copy';
+            copyKeyBtn!.classList.remove('bg-green-600');
+            copyKeyBtn!.classList.add('bg-blue-600', 'hover:bg-blue-700');
+          }, 2000);
+        } catch (err) {
+          alert('Failed to copy to clipboard');
+        }
+      });
+
+      closeShowKeyBtn?.addEventListener('click', () => {
+        showKeyModal?.classList.add('hidden');
+      });
+
+      (window as any).deleteKey = (id: string) => {
+        if (confirm('Are you sure you want to delete this API key? This action cannot be undone.')) {
+          dataStore.deleteApiKey(id);
+          loadApiKeys();
+        }
+      };
+
+      loadApiKeys();
+    </script>
+  </body>
+</html>
