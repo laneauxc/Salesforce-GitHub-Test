@@ -27,6 +27,11 @@ export default function Canvas() {
   const [zoom, setZoom] = useState<number>(1);
   const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   
+  // Connection mode state
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [connectionStart, setConnectionStart] = useState<string | null>(null);
+  const [edgeCounter, setEdgeCounter] = useState<number>(2);
+  
   // History for undo/redo
   const [history, setHistory] = useState<HistoryState[]>([{ nodes: initialNodes, edges: initialEdges }]);
   const [historyIndex, setHistoryIndex] = useState<number>(0);
@@ -97,6 +102,11 @@ export default function Canvas() {
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Escape key to cancel connection
+      if (e.key === 'Escape' && isConnecting) {
+        e.preventDefault();
+        cancelConnection();
+      }
       // Delete key
       if ((e.key === 'Delete' || e.key === 'Backspace') && selectedNode) {
         e.preventDefault();
@@ -117,7 +127,7 @@ export default function Canvas() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedNode, historyIndex, history]);
+  }, [selectedNode, historyIndex, history, isConnecting]);
 
   const handleCanvasDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -183,9 +193,73 @@ export default function Canvas() {
     }
   };
 
+  // Handle node click for connections
+  const handleNodeClick = (nodeId: string) => {
+    if (isConnecting) {
+      if (!connectionStart) {
+        // Start connection
+        setConnectionStart(nodeId);
+      } else if (connectionStart !== nodeId) {
+        // Complete connection
+        const newEdge: Edge = {
+          id: `edge-${edgeCounter}`,
+          from: connectionStart,
+          to: nodeId,
+        };
+        const newEdges = [...edges, newEdge];
+        setEdges(newEdges);
+        setEdgeCounter(edgeCounter + 1);
+        addToHistory(nodes, newEdges);
+        
+        // Reset connection state
+        setConnectionStart(null);
+        setIsConnecting(false);
+      }
+    } else {
+      setSelectedNode(nodeId);
+    }
+  };
+
+  // Toggle connection mode
+  const toggleConnectionMode = () => {
+    setIsConnecting(!isConnecting);
+    setConnectionStart(null);
+    if (!isConnecting) {
+      setSelectedNode(null); // Clear selection when entering connection mode
+    }
+  };
+
+  // Cancel connection
+  const cancelConnection = () => {
+    setIsConnecting(false);
+    setConnectionStart(null);
+  };
+
   return (
     <div className="flex-1 relative bg-gray-100">
       <TopControls />
+      
+      {/* Connection Mode Control */}
+      <div className="absolute top-4 right-4 z-20 flex gap-2">
+        <button
+          onClick={toggleConnectionMode}
+          className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-lg ${
+            isConnecting
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+          }`}
+        >
+          {isConnecting ? 'Connecting...' : 'Connect Nodes'}
+        </button>
+        {isConnecting && (
+          <button
+            onClick={cancelConnection}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-lg"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
       
       <div
         ref={canvasRef}
@@ -214,7 +288,9 @@ export default function Canvas() {
               key={node.id}
               node={node}
               selected={selectedNode === node.id}
-              onSelect={setSelectedNode}
+              isConnecting={isConnecting}
+              isConnectionStart={connectionStart === node.id}
+              onSelect={handleNodeClick}
               onDragStart={handleNodeDragStart}
               onDrag={handleNodeDrag}
               onDragEnd={handleNodeDragEnd}
@@ -237,7 +313,17 @@ export default function Canvas() {
       </div>
 
       {/* Help text */}
-      {selectedNode && (
+      {isConnecting && connectionStart && (
+        <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
+          Click another node to complete connection or press <kbd className="px-2 py-1 bg-white border border-blue-300 rounded">Esc</kbd> to cancel
+        </div>
+      )}
+      {isConnecting && !connectionStart && (
+        <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
+          Click a node to start connecting
+        </div>
+      )}
+      {selectedNode && !isConnecting && (
         <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
           Press <kbd className="px-2 py-1 bg-white border border-blue-300 rounded">Delete</kbd> to remove node
         </div>
