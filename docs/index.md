@@ -21,6 +21,7 @@ This repository contains documentation for:
 ### Features
 - [Order Tracking API Integration](features/feature1.html) - Real-time order tracking capability
 - [User Permission Audit Logging](features/feature2.html) - Comprehensive audit logging system
+- [Professional UI Upgrade with SVG Icons](features/ui-upgrade.html) - Enterprise-ready interface design ([PR #26](https://github.com/laneauxc/Salesforce-GitHub-Test/pull/26))
 
 ### Bug Fixes & Updates
 - [Invoice Calculation Fix](bugfixes/invoice-fix.html) - Resolved rounding inconsistencies
