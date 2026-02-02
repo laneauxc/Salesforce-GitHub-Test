@@ -18,6 +18,7 @@ export default function Canvas() {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [draggedNode, setDraggedNode] = useState<string | null>(null);
+  const [nodeCounter, setNodeCounter] = useState<number>(2);
   const canvasRef = useRef<HTMLDivElement>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
@@ -32,7 +33,7 @@ export default function Canvas() {
       const y = e.clientY - rect.top;
 
       const newNode: Node = {
-        id: `node-${Date.now()}`,
+        id: `node-${nodeCounter}`,
         type: nodeType,
         title: nodeLabel,
         x,
@@ -40,6 +41,7 @@ export default function Canvas() {
       };
 
       setNodes([...nodes, newNode]);
+      setNodeCounter(nodeCounter + 1);
     }
   };
 
