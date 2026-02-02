@@ -13,6 +13,8 @@ export interface Node {
 interface NodeCardProps {
   node: Node;
   selected?: boolean;
+  isConnecting?: boolean;
+  isConnectionStart?: boolean;
   onSelect?: (id: string) => void;
   onDragStart?: (e: React.DragEvent, id: string) => void;
   onDrag?: (e: React.DragEvent, id: string) => void;
@@ -22,23 +24,39 @@ interface NodeCardProps {
 export default function NodeCard({
   node,
   selected,
+  isConnecting,
+  isConnectionStart,
   onSelect,
   onDragStart,
   onDrag,
   onDragEnd,
 }: NodeCardProps) {
+  const getBorderStyle = () => {
+    if (isConnectionStart) {
+      return 'border-green-500 shadow-lg ring-2 ring-green-300';
+    }
+    if (isConnecting) {
+      return 'border-blue-400 shadow-lg cursor-pointer hover:border-blue-600';
+    }
+    if (selected) {
+      return 'border-blue-500 shadow-lg';
+    }
+    return 'border-gray-200 hover:border-gray-300';
+  };
+
   return (
     <div
-      draggable={node.type !== 'start'}
-      onDragStart={(e) => onDragStart?.(e, node.id)}
-      onDrag={(e) => onDrag?.(e, node.id)}
-      onDragEnd={(e) => onDragEnd?.(e, node.id)}
+      draggable={node.type !== 'start' && !isConnecting}
+      onDragStart={(e) => !isConnecting && onDragStart?.(e, node.id)}
+      onDrag={(e) => !isConnecting && onDrag?.(e, node.id)}
+      onDragEnd={(e) => !isConnecting && onDragEnd?.(e, node.id)}
       onClick={() => onSelect?.(node.id)}
       className={`
-        absolute cursor-move bg-white rounded-lg shadow-md border-2 p-4 min-w-[140px]
+        absolute bg-white rounded-lg shadow-md border-2 p-4 min-w-[140px]
         transition-all duration-200
-        ${selected ? 'border-blue-500 shadow-lg' : 'border-gray-200 hover:border-gray-300'}
-        ${node.type === 'start' ? 'cursor-default' : ''}
+        ${getBorderStyle()}
+        ${node.type === 'start' && !isConnecting ? 'cursor-default' : ''}
+        ${isConnecting ? 'cursor-pointer' : node.type !== 'start' ? 'cursor-move' : ''}
       `}
       style={{
         left: `${node.x}px`,
@@ -47,8 +65,12 @@ export default function NodeCard({
       }}
     >
       <div className="flex flex-col items-center gap-2">
-        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-          <Icon name={node.type} className="w-6 h-6 text-blue-600" />
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+          isConnectionStart ? 'bg-green-100' : 'bg-blue-50'
+        }`}>
+          <Icon name={node.type} className={`w-6 h-6 ${
+            isConnectionStart ? 'text-green-600' : 'text-blue-600'
+          }`} />
         </div>
         <div className="text-center">
           <div className="font-semibold text-sm text-gray-900">{node.title}</div>
