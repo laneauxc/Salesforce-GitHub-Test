@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 ---
 
 <Layout title="Home" description="Comprehensive documentation for the Salesforce GitHub Test project">
@@ -18,24 +20,33 @@ import Layout from '../layouts/Layout.astro';
     <li><strong>Support</strong>: Documentation and resources for support teams</li>
   </ul>
 
+  <h2>🚀 Interactive UI Screens</h2>
+  
+  <p>Explore our modern, interactive UI screens built with Astro and React:</p>
+  
+  <ul>
+    <li><a href={`${baseUrl}chat-prompts/`}><strong>Chat Prompts</strong></a> - Create and manage chat prompts with an intuitive interface</li>
+    <li><a href={`${baseUrl}agent-builder/`}><strong>Agent Builder</strong></a> - Visual node-based workflow editor for building agents</li>
+  </ul>
+
   <h2>Quick Links</h2>
 
   <h3>Features</h3>
   <ul>
-    <li><a href={`${import.meta.env.BASE_URL}features/feature1/`}>Order Tracking API Integration</a> - Real-time order tracking capability</li>
-    <li><a href={`${import.meta.env.BASE_URL}features/feature2/`}>User Permission Audit Logging</a> - Comprehensive audit logging system</li>
+    <li><a href={`${baseUrl}features/feature1/`}>Order Tracking API Integration</a> - Real-time order tracking capability</li>
+    <li><a href={`${baseUrl}features/feature2/`}>User Permission Audit Logging</a> - Comprehensive audit logging system</li>
   </ul>
 
   <h3>Bug Fixes & Updates</h3>
   <ul>
-    <li><a href={`${import.meta.env.BASE_URL}bugfixes/invoice-fix/`}>Invoice Calculation Fix</a> - Resolved rounding inconsistencies</li>
-    <li><a href={`${import.meta.env.BASE_URL}bugfixes/security-patch/`}>Security Patch - Authentication</a> - Critical authentication vulnerability fix</li>
-    <li><a href={`${import.meta.env.BASE_URL}bugfixes/bugfix-description/`}>Reporting Dashboard Fixes</a> - Dashboard stability improvements</li>
+    <li><a href={`${baseUrl}bugfixes/invoice-fix/`}>Invoice Calculation Fix</a> - Resolved rounding inconsistencies</li>
+    <li><a href={`${baseUrl}bugfixes/security-patch/`}>Security Patch - Authentication</a> - Critical authentication vulnerability fix</li>
+    <li><a href={`${baseUrl}bugfixes/bugfix-description/`}>Reporting Dashboard Fixes</a> - Dashboard stability improvements</li>
   </ul>
 
   <h3>Support Resources</h3>
   <ul>
-    <li><a href={`${import.meta.env.BASE_URL}support/support-update/`}>Support Documentation Updates</a> - Latest support guidelines and procedures</li>
+    <li><a href={`${baseUrl}support/support-update/`}>Support Documentation Updates</a> - Latest support guidelines and procedures</li>
   </ul>
 
   <h2>About This Documentation</h2>
