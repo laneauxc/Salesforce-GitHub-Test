@@ -60,6 +60,11 @@ npm run preview
 - `/support/` - Support documentation
 
 ### Application Screens
+
+**To access the UI screens:**
+- Click "UI Screens" in the sidebar navigation, then select either "Chat Prompts" or "Agent Builder"
+- Or click the links in the "🚀 Interactive UI Screens" section on the homepage
+
 - `/chat-prompts/` - **Chat Prompts Landing Screen**
   - Left sidebar navigation with Create, Manage, and Optimize sections
   - Centered prompt creation card
