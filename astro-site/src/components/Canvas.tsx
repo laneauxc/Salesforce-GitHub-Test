@@ -250,8 +250,8 @@ export default function Canvas() {
     <div className="flex-1 relative bg-gray-100">
       <TopControls />
       
-      {/* Connection Mode Control */}
-      <div className="absolute top-4 right-4 z-20 flex gap-2">
+      {/* Connection Mode Control - positioned below TopControls to avoid overlap */}
+      <div className="absolute top-16 right-4 z-20 flex gap-2">
         <button
           onClick={toggleConnectionMode}
           className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-lg ${
@@ -323,19 +323,19 @@ export default function Canvas() {
         {Math.round(zoom * 100)}%
       </div>
 
-      {/* Help text */}
+      {/* Help text - positioned below connection controls */}
       {isConnecting && connectionStart && (
-        <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
+        <div className="absolute top-28 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700 max-w-xs">
           Click another node to complete connection or press <kbd className="px-2 py-1 bg-white border border-blue-300 rounded">Esc</kbd> to cancel
         </div>
       )}
       {isConnecting && !connectionStart && (
-        <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
+        <div className="absolute top-28 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
           Click a node to start connecting
         </div>
       )}
       {selectedNode && !isConnecting && (
-        <div className="absolute top-20 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
+        <div className="absolute top-28 right-4 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg shadow-lg text-sm text-blue-700">
           Press <kbd className="px-2 py-1 bg-white border border-blue-300 rounded">Delete</kbd> to remove node
         </div>
       )}
