@@ -218,7 +218,7 @@ export default function Canvas() {
           };
           const newEdges = [...edges, newEdge];
           setEdges(newEdges);
-          setEdgeCounter(edgeCounter + 1);
+          setEdgeCounter(prev => prev + 1);
           addToHistory(nodes, newEdges);
         }
         
