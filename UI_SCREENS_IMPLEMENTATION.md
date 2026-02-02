@@ -28,11 +28,12 @@ Then visit:
 
 ## 📸 Screenshots
 
-### Chat Prompts Landing Screen
-![Chat Prompts Screen](https://github.com/user-attachments/assets/fd8173f8-c1e9-48e2-a9c3-bfc973b1fd7a)
+### Chat Prompts Landing Screen (Enterprise UI)
+![Chat Prompts Screen](https://github.com/user-attachments/assets/f168d034-dde9-4f80-8686-2ee2f155bc28)
 
 **Features:**
 - Left sidebar with Create, Manage, and Optimize navigation sections
+- Professional SVG icons instead of emojis for enterprise appearance
 - Centered prompt creation module with chat bubble icon
 - "Create a chat prompt" title
 - Blue "+ Create" button that navigates to Agent Builder
@@ -42,8 +43,8 @@ Then visit:
 - Clicking a chip populates the input field
 - Minimal design with lots of whitespace
 
-### Agent Builder Canvas Screen
-![Agent Builder Screen](https://github.com/user-attachments/assets/2cfbc180-0478-433c-8273-17bd0521ba3c)
+### Agent Builder Canvas Screen (Enterprise UI)
+![Agent Builder Screen](https://github.com/user-attachments/assets/b28d32e0-5b3a-44c2-9245-d67c1b0152c8)
 
 **Features:**
 - Left node palette with four categories:
@@ -74,6 +75,7 @@ Then visit:
 
 ### Shared Components
 - **SidebarNav.tsx** - Reusable navigation sidebar with sections and items
+- **Icon.tsx** - Enterprise-grade SVG icon component with 20+ professional icons
 
 ### Chat Prompts Screen
 - **PromptCreateCard.tsx** - Main creation module with input and suggestion chips
@@ -85,6 +87,31 @@ Then visit:
 - **EdgeRenderer.tsx** - SVG-based connection renderer
 - **TopControls.tsx** - Action buttons at top-right
 - **BottomControls.tsx** - Toolbar at bottom-center
+
+## 🎨 Enterprise UI Design
+
+### Professional Icon System
+Replaced cartoonish emojis with professional Heroicons-style SVG icons for an enterprise-level appearance:
+
+**Icon Component Features:**
+- 20+ unique SVG icons covering all UI elements
+- Consistent stroke width (strokeWidth={2}) and styling
+- Configurable sizing via className prop
+- Clean, minimalist line-based design
+- Better accessibility with proper SVG structure
+
+**Icon Categories:**
+- **Create Section**: chat, agent-builder, audio, images, videos, assistants
+- **Manage Section**: usage, api-keys, apps, logs, storage, batches
+- **Optimize Section**: evaluation (pie chart), fine-tuning (settings)
+- **Node Types**: agent, classify, end, note, file-search, guardrails, mcp, if-else, while, user-approval, transform, set-state, start
+
+**Visual Improvements:**
+- Sidebar navigation uses professional SVG icons (w-5 h-5)
+- Node palette items display clean icons (w-4 h-4)
+- Canvas nodes feature icons in circular blue backgrounds (w-6 h-6 in w-10 h-10 circles)
+- Consistent visual language across all screens
+- Enterprise-ready aesthetics suitable for business applications
 
 ## ✨ Key Features Implemented
 
@@ -120,6 +147,7 @@ Then visit:
 
 ✅ Page loading and rendering  
 ✅ Sidebar navigation rendering  
+✅ Professional SVG icons display correctly  
 ✅ Input field interaction  
 ✅ Suggestion chip clicking and population  
 ✅ "+ Create" button navigation  
@@ -130,8 +158,9 @@ Then visit:
 ✅ SVG edge rendering between nodes  
 ✅ "Back to Chat" navigation  
 ✅ Build process without errors  
-✅ Code review (ID generation fixed)  
+✅ Code review (ID generation fixed, duplicate icons resolved)  
 ✅ Security scan (no vulnerabilities)  
+✅ Enterprise UI validation (emojis replaced with professional icons)  
 
 ## 📝 Code Quality
 
