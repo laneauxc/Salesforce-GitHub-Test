@@ -1,118 +1,214 @@
-# Salesforce GitHub Test Documentation - Astro Site
+# Salesforce GitHub Test Documentation
 
-This is a modern documentation site built with [Astro](https://astro.build), replacing the previous Jekyll implementation.
+This is the documentation site for the Salesforce GitHub Test repository, built with Astro, React, and Tailwind CSS. It includes two modern UI screens for creating prompts and building agents visually.
 
 ## 🚀 Features
 
-- **Modern Static Site Generator**: Built with Astro for blazing-fast performance
-- **Responsive Design**: Beautiful OpenAI-inspired theme that works on all devices
-- **Easy to Maintain**: Simple markdown-based content management
-- **SEO Optimized**: Includes sitemap generation and proper meta tags
-- **GitHub Pages Ready**: Automated deployment via GitHub Actions
+- **Documentation Site**: Comprehensive documentation with navigation and search
+- **Chat Prompts Landing Screen**: Interactive prompt creation interface
+- **Agent Builder Canvas**: Visual node-based workflow editor with drag-and-drop
 
-## 📁 Project Structure
+## 📦 Tech Stack
+
+- **Astro 5.x**: Modern static site builder
+- **React 18**: UI component library
+- **Tailwind CSS 3**: Utility-first CSS framework
+- **TypeScript**: Type-safe development
+
+## 🛠️ Getting Started
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:4321/Salesforce-GitHub-Test/` to view the site.
+
+### Build
+
+Build for production:
+
+```bash
+npm run build
+```
+
+The built site will be in the `dist/` directory.
+
+### Preview
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+## 📄 Pages and Routes
+
+### Documentation Pages
+- `/` - Home page
+- `/features/` - Features overview
+- `/bugfixes/` - Bug fixes documentation
+- `/support/` - Support documentation
+
+### Application Screens
+- `/chat-prompts/` - **Chat Prompts Landing Screen**
+  - Left sidebar navigation with Create, Manage, and Optimize sections
+  - Centered prompt creation card
+  - Suggestion chips for quick prompts
+  - Interactive input with submit functionality
+  
+- `/agent-builder/` - **Agent Builder Canvas Screen**
+  - Node palette with Core, Tools, Logic, and Data categories
+  - Drag-and-drop canvas for building agent workflows
+  - Visual node connections with SVG edges
+  - Top controls (Evaluate, Code, Publish)
+  - Bottom controls (Zoom, Center, Undo, Redo)
+
+## 🗂️ Project Structure
 
 ```
-astro-site/
-├── public/
-│   └── assets/
-│       ├── images/     # Logo and images
-│       └── js/         # Legacy JavaScript files
+/
+├── public/              # Static assets (images, fonts)
 ├── src/
-│   ├── layouts/
-│   │   └── Layout.astro    # Main layout with navigation
-│   ├── pages/
-│   │   ├── index.astro     # Homepage
-│   │   ├── features/       # Feature documentation
-│   │   ├── bugfixes/       # Bug fix documentation
-│   │   └── support/        # Support documentation
-│   └── styles/
-│       └── global.css      # Global styles
-├── astro.config.mjs        # Astro configuration
-└── package.json
+│   ├── components/      # React components
+│   │   ├── SidebarNav.tsx        # Navigation sidebar
+│   │   ├── PromptCreateCard.tsx  # Prompt creation UI
+│   │   ├── NodePalette.tsx       # Draggable node palette
+│   │   ├── Canvas.tsx            # Agent builder canvas
+│   │   ├── NodeCard.tsx          # Individual node component
+│   │   ├── EdgeRenderer.tsx      # SVG edge/connection renderer
+│   │   ├── TopControls.tsx       # Top action buttons
+│   │   └── BottomControls.tsx    # Bottom toolbar controls
+│   ├── layouts/         # Page layouts
+│   │   └── Layout.astro          # Main documentation layout
+│   ├── pages/           # Site pages (file-based routing)
+│   │   ├── index.astro           # Home page
+│   │   ├── chat-prompts.astro    # Chat prompts screen
+│   │   ├── agent-builder.astro   # Agent builder screen
+│   │   ├── features/             # Feature documentation
+│   │   ├── bugfixes/             # Bug fix documentation
+│   │   └── support/              # Support documentation
+│   └── styles/          # Global styles
+│       ├── global.css            # Cyberpunk-themed documentation styles
+│       └── tailwind.css          # Tailwind base styles
+├── astro.config.mjs     # Astro configuration
+├── tailwind.config.mjs  # Tailwind configuration
+├── tsconfig.json        # TypeScript configuration
+└── package.json         # Dependencies and scripts
 ```
 
-## 🧞 Commands
+## 🎨 Component Overview
 
-All commands are run from the `astro-site` directory:
+### Chat Prompts Screen Components
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
+**SidebarNav**
+- Displays three sections: Create, Manage, Optimize
+- Supports selected state highlighting
+- Icon + label layout for each item
 
-## 🌐 Deployment
+**PromptCreateCard**
+- Centered creation module with chat bubble icon
+- "+ Create" button to navigate to Agent Builder
+- Input field with placeholder and submit button
+- Suggestion chips that populate the input when clicked
 
-The site is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+### Agent Builder Screen Components
 
-### Manual Deployment
+**NodePalette**
+- Four node categories: Core, Tools, Logic, Data
+- Draggable node items with HTML5 drag API
+- Visual hover states and cursor feedback
 
-1. Ensure you're in the `astro-site` directory
-2. Run `npm run build`
-3. The built site will be in the `dist/` directory
-4. Push changes to trigger the GitHub Actions workflow
+**Canvas**
+- Drop zone for creating new nodes
+- Grid background pattern
+- Initial setup with Start and My agent nodes
+- Drag existing nodes to reposition them
 
-### GitHub Pages Configuration
+**NodeCard**
+- Rounded card design with icon and labels
+- Selection state with blue outline
+- Draggable (except Start node)
+- Dynamic positioning
 
-The site is configured to be deployed to:
-- **URL**: `https://laneauxc.github.io/Salesforce-GitHub-Test/`
-- **Base Path**: `/Salesforce-GitHub-Test`
+**EdgeRenderer**
+- SVG-based connection rendering
+- Straight lines between nodes
+- Arrow markers on connections
 
-This is configured in `astro.config.mjs`.
+**TopControls**
+- Evaluate, Code, and Publish buttons
+- Positioned at top-right of canvas
 
-## 📝 Adding Content
+**BottomControls**
+- Zoom in/out, Center view, Undo, Redo
+- Floating toolbar at bottom-center
 
-### Adding a New Page
+## 🔧 Key Features Implementation
 
-1. Create a new `.astro` file in the appropriate directory under `src/pages/`
-2. Use the Layout component:
+### Drag and Drop
+- Node palette items are draggable using `draggable` attribute
+- Canvas accepts drops via `onDrop` and `onDragOver` handlers
+- Existing nodes can be repositioned by dragging
+- Real-time position updates during drag
 
-```astro
----
-import Layout from '../../layouts/Layout.astro';
----
+### State Management
+- React `useState` for local component state
+- Node and edge arrays managed in Canvas component
+- Selection tracking for visual feedback
 
-<Layout title="Your Page Title" description="Your description">
-  <!-- Your content here -->
-</Layout>
-```
-
-3. Update the navigation in `src/layouts/Layout.astro` if needed
+### Navigation
+- Programmatic navigation between screens
+- Back button on Agent Builder to return to Chat Prompts
+- "+ Create" button navigates to Agent Builder
 
 ### Styling
+- Tailwind CSS utility classes for rapid styling
+- Clean, minimal modern design
+- Responsive layout considerations
+- Consistent color scheme and spacing
 
-- Global styles are in `src/styles/global.css`
-- The theme uses CSS variables for easy customization
-- The design follows an OpenAI-inspired aesthetic with ConvoPro brand accents
+## 📸 Screenshots
 
-## 🎨 Design System
+### Chat Prompts Landing Screen
+![Chat Prompts](https://github.com/user-attachments/assets/fd8173f8-c1e9-48e2-a9c3-bfc973b1fd7a)
 
-The site uses a modern design system with:
-- **Clean Typography**: Optimized for readability
-- **Responsive Layout**: Mobile-first approach
-- **Sidebar Navigation**: Easy access to all documentation
-- **Search Functionality**: Quick content discovery (placeholder for now)
-- **Accessible**: WCAG compliant design
+### Agent Builder Canvas Screen
+![Agent Builder](https://github.com/user-attachments/assets/2cfbc180-0478-433c-8273-17bd0521ba3c)
 
-## 📦 Technology Stack
+## 🧪 Testing
 
-- **Astro** - Static Site Generator
-- **@astrojs/mdx** - MDX support for advanced markdown
-- **@astrojs/sitemap** - Automatic sitemap generation
-- **Font Awesome** - Icon library
+The application has been tested with:
+- Page loading and rendering
+- Drag and drop functionality
+- Navigation between screens
+- Input interaction
+- Suggestion chip interaction
 
-## 🔄 Migrating from Jekyll
+## 🚀 Deployment
 
-This site replaces the previous Jekyll implementation with a modern Astro build. Key improvements:
+This site is configured for GitHub Pages deployment:
+- Base URL: `/Salesforce-GitHub-Test`
+- Site URL: `https://laneauxc.github.io`
 
-1. **Faster Builds**: Astro builds are significantly faster than Jekyll
-2. **Better DX**: Modern JavaScript tooling and hot module reloading
-3. **Zero JavaScript by Default**: Better performance with opt-in interactivity
-4. **Modern Styling**: Updated CSS with better responsive design
-5. **Easier Maintenance**: Simpler file structure and configuration
+Build and deploy:
+```bash
+npm run build
+# Deploy dist/ directory to GitHub Pages
+```
 
-## 📄 License
+## 📚 Learn More
 
-This documentation is part of the Salesforce GitHub Test repository.
+- [Astro Documentation](https://docs.astro.build)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)
