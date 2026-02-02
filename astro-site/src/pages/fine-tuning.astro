@@ -1,0 +1,498 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', selected: true, href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning - Optimize</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-6xl mx-auto p-8">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900 mb-2">Fine-tuning</h1>
+              <p class="text-gray-600">Create custom models tailored to your specific use cases</p>
+            </div>
+            <button id="createFineTuneBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Create Fine-tune Job
+            </button>
+          </div>
+
+          <!-- Info Banner -->
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 flex items-start gap-3">
+            <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h3 class="font-semibold text-blue-900 mb-1">About Fine-tuning</h3>
+              <p class="text-sm text-blue-800">Fine-tuning creates a custom version of a model trained on your data. This improves model performance on specific tasks and can reduce cost and latency.</p>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Total Models</span>
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">12</div>
+              <p class="text-sm text-gray-500 mt-1">Fine-tuned models</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Training</span>
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">2</div>
+              <p class="text-sm text-orange-600 mt-1">Jobs in progress</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Completed</span>
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">9</div>
+              <p class="text-sm text-green-600 mt-1">Successfully trained</p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">Training Data</span>
+                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              </div>
+              <div class="text-3xl font-bold text-gray-900">24.5K</div>
+              <p class="text-sm text-gray-500 mt-1">Training examples</p>
+            </div>
+          </div>
+
+          <!-- Fine-tuning Jobs -->
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 class="text-lg font-semibold text-gray-900">Fine-tuning Jobs</h2>
+              <div class="flex items-center gap-2">
+                <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm">
+                  <option>All Status</option>
+                  <option>Training</option>
+                  <option>Completed</option>
+                  <option>Failed</option>
+                </select>
+              </div>
+            </div>
+            <div class="divide-y divide-gray-200">
+              <!-- Training Job -->
+              <div class="px-6 py-4 hover:bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-orange-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">ft:gpt-3.5-turbo:custom-model-2024</h3>
+                      <p class="text-sm text-gray-500">Started 2 hours ago • Customer Support Dataset</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">Training</span>
+                </div>
+                <div class="ml-13 space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Epoch Progress</span>
+                    <span class="text-gray-900 font-medium">Epoch 2 of 3</span>
+                  </div>
+                  <div class="bg-gray-200 rounded-full h-2">
+                    <div class="bg-orange-500 h-2 rounded-full" style="width: 66.6%"></div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-4 text-sm pt-2">
+                    <div>
+                      <span class="text-gray-600">Training samples</span>
+                      <p class="text-gray-900 font-medium">5,000</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Current loss</span>
+                      <p class="text-gray-900 font-medium">0.234</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">ETA</span>
+                      <p class="text-gray-900 font-medium">45 minutes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Completed Job -->
+              <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">ft:gpt-4:legal-assistant-v3</h3>
+                      <p class="text-sm text-gray-500">Completed yesterday • Legal Documents Dataset</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Completed</span>
+                </div>
+                <div class="ml-13 space-y-2">
+                  <div class="grid grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span class="text-gray-600">Samples</span>
+                      <p class="text-gray-900 font-medium">10,000</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Final Loss</span>
+                      <p class="text-gray-900 font-medium">0.142</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Duration</span>
+                      <p class="text-gray-900 font-medium">3h 24m</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Cost</span>
+                      <p class="text-gray-900 font-medium">$18.50</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 pt-2">
+                    <button class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+                      Use Model
+                    </button>
+                    <button class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded hover:bg-gray-50 transition-colors">
+                      View Metrics
+                    </button>
+                    <button class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded hover:bg-gray-50 transition-colors">
+                      Download Model
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Another Training Job -->
+              <div class="px-6 py-4 hover:bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-orange-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">ft:gpt-3.5-turbo:sentiment-v2</h3>
+                      <p class="text-sm text-gray-500">Started 30 minutes ago • Social Media Dataset</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">Training</span>
+                </div>
+                <div class="ml-13 space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">Epoch Progress</span>
+                    <span class="text-gray-900 font-medium">Epoch 1 of 4</span>
+                  </div>
+                  <div class="bg-gray-200 rounded-full h-2">
+                    <div class="bg-orange-500 h-2 rounded-full" style="width: 25%"></div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-4 text-sm pt-2">
+                    <div>
+                      <span class="text-gray-600">Training samples</span>
+                      <p class="text-gray-900 font-medium">8,000</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Current loss</span>
+                      <p class="text-gray-900 font-medium">0.567</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">ETA</span>
+                      <p class="text-gray-900 font-medium">2 hours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Completed Job -->
+              <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-gray-900">ft:gpt-4:medical-qa-v1</h3>
+                      <p class="text-sm text-gray-500">Completed 3 days ago • Medical Q&A Dataset</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Completed</span>
+                </div>
+                <div class="ml-13 space-y-2">
+                  <div class="grid grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span class="text-gray-600">Samples</span>
+                      <p class="text-gray-900 font-medium">15,000</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Final Loss</span>
+                      <p class="text-gray-900 font-medium">0.098</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Duration</span>
+                      <p class="text-gray-900 font-medium">5h 12m</p>
+                    </div>
+                    <div>
+                      <span class="text-gray-600">Cost</span>
+                      <p class="text-gray-900 font-medium">$28.75</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 pt-2">
+                    <button class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+                      Use Model
+                    </button>
+                    <button class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded hover:bg-gray-50 transition-colors">
+                      View Metrics
+                    </button>
+                    <button class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded hover:bg-gray-50 transition-colors">
+                      Download Model
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create Fine-tune Modal -->
+    <div id="fineTuneModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-gray-900">Create Fine-tuning Job</h2>
+          <button id="closeFineTuneModal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form id="fineTuneForm" class="p-6 space-y-6">
+          <div>
+            <label for="modelName" class="block text-sm font-medium text-gray-700 mb-2">Model Name *</label>
+            <input
+              type="text"
+              id="modelName"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="e.g., custom-support-model-v1"
+            />
+          </div>
+
+          <div>
+            <label for="baseModel" class="block text-sm font-medium text-gray-700 mb-2">Base Model *</label>
+            <select
+              id="baseModel"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select base model</option>
+              <option value="gpt-4">GPT-4</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="trainingFile" class="block text-sm font-medium text-gray-700 mb-2">Training File *</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" id="trainingDropZone">
+              <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <p class="text-gray-700 font-medium mb-1">Drop JSONL file here or click to browse</p>
+              <p class="text-sm text-gray-500">Training data in JSONL format</p>
+            </div>
+            <input type="file" id="trainingFile" accept=".jsonl" class="hidden" />
+          </div>
+
+          <div>
+            <label for="epochs" class="block text-sm font-medium text-gray-700 mb-2">Epochs</label>
+            <input
+              type="number"
+              id="epochs"
+              value="3"
+              min="1"
+              max="10"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <p class="text-xs text-gray-500 mt-1">Number of training epochs (1-10)</p>
+          </div>
+
+          <div>
+            <label for="learningRate" class="block text-sm font-medium text-gray-700 mb-2">Learning Rate Multiplier</label>
+            <input
+              type="number"
+              id="learningRate"
+              value="1.0"
+              step="0.1"
+              min="0.1"
+              max="2.0"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <p class="text-xs text-gray-500 mt-1">Multiplier for the learning rate (0.1-2.0)</p>
+          </div>
+
+          <div class="flex gap-3 pt-4 border-t border-gray-200">
+            <button
+              type="submit"
+              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Start Fine-tuning
+            </button>
+            <button
+              type="button"
+              id="cancelFineTune"
+              class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const createFineTuneBtn = document.getElementById('createFineTuneBtn');
+      const fineTuneModal = document.getElementById('fineTuneModal');
+      const closeFineTuneModal = document.getElementById('closeFineTuneModal');
+      const cancelFineTune = document.getElementById('cancelFineTune');
+      const fineTuneForm = document.getElementById('fineTuneForm') as HTMLFormElement;
+      const trainingDropZone = document.getElementById('trainingDropZone');
+      const trainingFile = document.getElementById('trainingFile') as HTMLInputElement;
+
+      createFineTuneBtn?.addEventListener('click', () => {
+        fineTuneModal?.classList.remove('hidden');
+      });
+
+      closeFineTuneModal?.addEventListener('click', () => {
+        fineTuneModal?.classList.add('hidden');
+      });
+
+      cancelFineTune?.addEventListener('click', () => {
+        fineTuneModal?.classList.add('hidden');
+      });
+
+      trainingDropZone?.addEventListener('click', () => {
+        trainingFile?.click();
+      });
+
+      trainingFile?.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          trainingDropZone!.innerHTML = `
+            <svg class="w-12 h-12 text-green-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-gray-700 font-medium mb-1">${file.name}</p>
+            <p class="text-sm text-gray-500">${(file.size / 1024).toFixed(2)} KB</p>
+          `;
+        }
+      });
+
+      trainingDropZone?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        trainingDropZone.classList.add('border-blue-400', 'bg-blue-50');
+      });
+
+      trainingDropZone?.addEventListener('dragleave', () => {
+        trainingDropZone.classList.remove('border-blue-400', 'bg-blue-50');
+      });
+
+      trainingDropZone?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        trainingDropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        
+        const file = e.dataTransfer?.files[0];
+        if (file) {
+          trainingDropZone!.innerHTML = `
+            <svg class="w-12 h-12 text-green-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-gray-700 font-medium mb-1">${file.name}</p>
+            <p class="text-sm text-gray-500">${(file.size / 1024).toFixed(2)} KB</p>
+          `;
+        }
+      });
+
+      fineTuneForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const modelName = (document.getElementById('modelName') as HTMLInputElement).value;
+        const baseModel = (document.getElementById('baseModel') as HTMLSelectElement).value;
+        
+        alert(`Fine-tuning job "${modelName}" started with base model ${baseModel}. This will take several hours.`);
+        fineTuneModal?.classList.add('hidden');
+        fineTuneForm?.reset();
+      });
+    </script>
+  </body>
+</html>

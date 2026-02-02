@@ -1,0 +1,321 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL;
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', selected: true, href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logs - Manage</title>
+  </head>
+  <body class="bg-white">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-6xl mx-auto p-8">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">System Logs</h1>
+            <p class="text-gray-600">Monitor system activity and troubleshoot issues</p>
+          </div>
+
+          <!-- Filters and Actions -->
+          <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+              <div class="flex items-center gap-3">
+                <select id="levelFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                  <option value="all">All Levels</option>
+                  <option value="info">Info</option>
+                  <option value="warning">Warning</option>
+                  <option value="error">Error</option>
+                </select>
+                
+                <select id="timeFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                  <option value="all">All Time</option>
+                  <option value="1h">Last Hour</option>
+                  <option value="24h">Last 24 Hours</option>
+                  <option value="7d">Last 7 Days</option>
+                </select>
+                
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Search logs..."
+                  class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-64"
+                />
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <button id="refreshBtn" class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Refresh
+                </button>
+                <button id="exportBtn" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Export
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Log Entries -->
+          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-6 py-3 border-b border-gray-200 bg-gray-50">
+              <div class="flex items-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="w-32">Level</div>
+                <div class="w-48">Timestamp</div>
+                <div class="flex-1">Message</div>
+                <div class="w-20">Actions</div>
+              </div>
+            </div>
+            <div class="divide-y divide-gray-200" id="logsList">
+              <!-- Logs will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-600">
+              Showing <span id="showingCount">0</span> entries
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm disabled:opacity-50" disabled>
+                Previous
+              </button>
+              <button class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Log Details Modal -->
+    <div id="logModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-gray-900">Log Details</h2>
+          <button id="closeLogModal" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Level</label>
+            <div id="modalLevel" class="text-gray-900"></div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Timestamp</label>
+            <div id="modalTimestamp" class="text-gray-900"></div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+            <div id="modalMessage" class="text-gray-900"></div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Details</label>
+            <div id="modalDetails" class="bg-gray-50 rounded-lg p-4 font-mono text-sm text-gray-900 overflow-x-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      import { dataStore } from '../utils/dataStore';
+      import type { LogEntry } from '../utils/dataStore';
+
+      const logsList = document.getElementById('logsList');
+      const levelFilter = document.getElementById('levelFilter') as HTMLSelectElement;
+      const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+      const refreshBtn = document.getElementById('refreshBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const showingCount = document.getElementById('showingCount');
+      const logModal = document.getElementById('logModal');
+      const closeLogModal = document.getElementById('closeLogModal');
+
+      let currentLogs: LogEntry[] = [];
+
+      function getLevelColor(level: string): { bg: string; text: string; icon: string } {
+        switch (level) {
+          case 'error':
+            return { bg: 'bg-red-100', text: 'text-red-700', icon: '❌' };
+          case 'warning':
+            return { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: '⚠️' };
+          default:
+            return { bg: 'bg-blue-100', text: 'text-blue-700', icon: 'ℹ️' };
+        }
+      }
+
+      function loadLogs() {
+        const allLogs = dataStore.getLogs();
+        const levelFilterValue = levelFilter?.value || 'all';
+        const searchValue = searchInput?.value.toLowerCase() || '';
+
+        currentLogs = allLogs.filter(log => {
+          const matchesLevel = levelFilterValue === 'all' || log.level === levelFilterValue;
+          const matchesSearch = !searchValue || 
+            log.message.toLowerCase().includes(searchValue) ||
+            log.details?.toLowerCase().includes(searchValue);
+          return matchesLevel && matchesSearch;
+        });
+
+        if (!logsList) return;
+
+        if (currentLogs.length === 0) {
+          logsList.innerHTML = `
+            <div class="px-6 py-12 text-center text-gray-500">
+              No logs found matching the current filters.
+            </div>
+          `;
+          if (showingCount) showingCount.textContent = '0';
+          return;
+        }
+
+        logsList.innerHTML = currentLogs.map(log => {
+          const { bg, text, icon } = getLevelColor(log.level);
+          const timestamp = new Date(log.timestamp).toLocaleString();
+          
+          return `
+            <div class="px-6 py-4 hover:bg-gray-50 cursor-pointer log-entry" data-log-id="${log.id}">
+              <div class="flex items-center">
+                <div class="w-32">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 ${bg} ${text} text-xs font-medium rounded-full">
+                    <span>${icon}</span>
+                    <span class="capitalize">${log.level}</span>
+                  </span>
+                </div>
+                <div class="w-48 text-sm text-gray-600">${timestamp}</div>
+                <div class="flex-1">
+                  <div class="text-sm text-gray-900 font-medium mb-1">${log.message}</div>
+                  ${log.details ? `<div class="text-xs text-gray-500 truncate">${log.details}</div>` : ''}
+                </div>
+                <div class="w-20 text-right">
+                  <button class="p-1 text-gray-400 hover:text-blue-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (showingCount) showingCount.textContent = currentLogs.length.toString();
+
+        // Add click handlers to log entries
+        document.querySelectorAll('.log-entry').forEach(entry => {
+          entry.addEventListener('click', () => {
+            const logId = entry.getAttribute('data-log-id');
+            const log = currentLogs.find(l => l.id === logId);
+            if (log) showLogDetails(log);
+          });
+        });
+      }
+
+      function showLogDetails(log: LogEntry) {
+        const { bg, text, icon } = getLevelColor(log.level);
+        const timestamp = new Date(log.timestamp).toLocaleString();
+
+        document.getElementById('modalLevel')!.innerHTML = `
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 ${bg} ${text} text-xs font-medium rounded-full">
+            <span>${icon}</span>
+            <span class="capitalize">${log.level}</span>
+          </span>
+        `;
+        document.getElementById('modalTimestamp')!.textContent = timestamp;
+        document.getElementById('modalMessage')!.textContent = log.message;
+        document.getElementById('modalDetails')!.textContent = log.details || 'No additional details available';
+
+        logModal?.classList.remove('hidden');
+      }
+
+      closeLogModal?.addEventListener('click', () => {
+        logModal?.classList.add('hidden');
+      });
+
+      levelFilter?.addEventListener('change', loadLogs);
+      searchInput?.addEventListener('input', loadLogs);
+
+      refreshBtn?.addEventListener('click', () => {
+        // Simulate adding a new log
+        const levels: ('info' | 'warning' | 'error')[] = ['info', 'warning', 'error'];
+        const messages = [
+          'API request completed successfully',
+          'Rate limit approaching',
+          'Connection timeout',
+          'Cache cleared',
+          'Authentication failed',
+          'Database query executed'
+        ];
+        
+        const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        
+        dataStore.addLog(randomLevel, randomMessage, `Random details for: ${randomMessage}`);
+        loadLogs();
+      });
+
+      exportBtn?.addEventListener('click', () => {
+        const dataStr = JSON.stringify(currentLogs, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `logs-${new Date().toISOString()}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+
+      loadLogs();
+    </script>
+  </body>
+</html>

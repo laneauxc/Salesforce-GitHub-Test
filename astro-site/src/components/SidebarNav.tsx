@@ -6,6 +6,7 @@ interface NavItem {
   label: string;
   selected?: boolean;
   onClick?: () => void;
+  href?: string;
 }
 
 interface NavSection {
@@ -32,7 +33,13 @@ export default function SidebarNav({ sections }: SidebarNavProps) {
               {section.items.map((item, itemIdx) => (
                 <button
                   key={itemIdx}
-                  onClick={item.onClick}
+                  onClick={() => {
+                    if (item.onClick) {
+                      item.onClick();
+                    } else if (item.href) {
+                      window.location.href = item.href;
+                    }
+                  }}
                   className={`
                     w-full flex items-center gap-3 px-6 py-2 text-sm
                     transition-colors duration-150
