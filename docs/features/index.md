@@ -29,17 +29,4 @@ Added detailed audit logging for changes to user permissions to support complian
 
 ---
 
-### [Professional UI Upgrade with SVG Icons](ui-upgrade.html)
-Replaced emoji icons with professional SVG icons throughout the interface, creating an enterprise-ready appearance.
-
-**Key Benefits:**
-- Enhanced professional appearance suitable for business applications
-- Improved consistency with unified icon style
-- Better scalability with crisp SVG rendering at any size
-- Complete icon set covering all UI sections and node types
-
-**Pull Request:** [View PR #26](https://github.com/laneauxc/Salesforce-GitHub-Test/pull/26)
-
----
-
 [← Back to Home](../index.html)

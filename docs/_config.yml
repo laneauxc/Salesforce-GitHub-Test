@@ -16,8 +16,6 @@ navigation:
         url: /features/feature1.html
       - title: User Permission Audit Logging
         url: /features/feature2.html
-      - title: Professional UI Upgrade
-        url: /features/ui-upgrade.html
   - title: Bug Fixes
     url: /bugfixes/
     subitems:
