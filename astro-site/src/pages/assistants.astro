@@ -1,5 +1,6 @@
 ---
 import SidebarNav from '../components/SidebarNav';
+import ProfileMenu from '../components/ProfileMenu';
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
@@ -42,8 +43,15 @@ const navSections = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assistants - Manage</title>
+    <script src={`${baseUrl}dark-mode-init.js`}></script>
+    <style>
+      /* Smooth transition for dark mode */
+      * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      }
+    </style>
   </head>
-  <body class="bg-white">
+  <body class="bg-white dark:bg-gray-900">
     <div class="flex h-screen">
       <!-- Sidebar -->
       <SidebarNav 
@@ -52,12 +60,17 @@ const navSections = [
       />
 
       <!-- Main content area -->
-      <main class="flex-1 overflow-y-auto">
+      <main class="flex-1 overflow-y-auto relative">
+        <!-- Profile Menu in top right -->
+        <div class="absolute top-4 right-4 z-10">
+          <ProfileMenu client:load baseUrl={baseUrl} />
+        </div>
+        
         <div class="max-w-6xl mx-auto p-8">
           <div class="flex items-center justify-between mb-8">
             <div>
-              <h1 class="text-3xl font-bold text-gray-900 mb-2">Assistants</h1>
-              <p class="text-gray-600">Create and manage AI assistants with custom instructions and tools</p>
+              <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Assistants</h1>
+              <p class="text-gray-600 dark:text-gray-400">Create and manage AI assistants with custom instructions and tools</p>
             </div>
             <button id="createAssistantBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,10 +90,10 @@ const navSections = [
 
     <!-- Create/Edit Assistant Modal -->
     <div id="assistantModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 class="text-2xl font-semibold text-gray-900" id="modalTitle">Create Assistant</h2>
-          <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white" id="modalTitle">Create Assistant</h2>
+          <button id="closeModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -91,32 +104,32 @@ const navSections = [
           <input type="hidden" id="assistantId" />
           
           <div>
-            <label for="assistantName" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+            <label for="assistantName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
             <input
               type="text"
               id="assistantName"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               placeholder="e.g., Code Helper, Research Assistant"
             />
           </div>
 
           <div>
-            <label for="assistantDescription" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <label for="assistantDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
             <input
               type="text"
               id="assistantDescription"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               placeholder="Brief description of what this assistant does"
             />
           </div>
 
           <div>
-            <label for="assistantModel" class="block text-sm font-medium text-gray-700 mb-2">Model *</label>
+            <label for="assistantModel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Model *</label>
             <select
               id="assistantModel"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="gpt-4">GPT-4</option>
               <option value="gpt-4-turbo">GPT-4 Turbo</option>
@@ -125,35 +138,35 @@ const navSections = [
           </div>
 
           <div>
-            <label for="assistantInstructions" class="block text-sm font-medium text-gray-700 mb-2">Instructions *</label>
+            <label for="assistantInstructions" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Instructions *</label>
             <textarea
               id="assistantInstructions"
               required
               rows="4"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               placeholder="System instructions that define the assistant's behavior..."
             ></textarea>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tools</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tools</label>
             <div class="space-y-2">
               <label class="flex items-center gap-2">
                 <input type="checkbox" value="code_interpreter" class="tool-checkbox rounded text-blue-600 focus:ring-blue-500" />
-                <span class="text-sm text-gray-700">Code Interpreter</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">Code Interpreter</span>
               </label>
               <label class="flex items-center gap-2">
                 <input type="checkbox" value="file_search" class="tool-checkbox rounded text-blue-600 focus:ring-blue-500" />
-                <span class="text-sm text-gray-700">File Search</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">File Search</span>
               </label>
               <label class="flex items-center gap-2">
                 <input type="checkbox" value="function" class="tool-checkbox rounded text-blue-600 focus:ring-blue-500" />
-                <span class="text-sm text-gray-700">Function Calling</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">Function Calling</span>
               </label>
             </div>
           </div>
 
-          <div class="flex gap-3 pt-4 border-t border-gray-200">
+          <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="submit"
               class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -163,7 +176,7 @@ const navSections = [
             <button
               type="button"
               id="cancelBtn"
-              class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
             >
               Cancel
             </button>
@@ -201,7 +214,7 @@ const navSections = [
         }
 
         assistantsList.innerHTML = assistants.map(assistant => `
-          <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between mb-4">
               <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
@@ -210,17 +223,17 @@ const navSections = [
                   </svg>
                 </div>
                 <div>
-                  <h3 class="font-semibold text-gray-900">${assistant.name}</h3>
-                  <p class="text-sm text-gray-500">${assistant.model}</p>
+                  <h3 class="font-semibold text-gray-900 dark:text-white">${assistant.name}</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">${assistant.model}</p>
                 </div>
               </div>
               <div class="flex items-center gap-1">
-                <button onclick="editAssistant('${assistant.id}')" class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors">
+                <button onclick="editAssistant('${assistant.id}')" class="p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
-                <button onclick="deleteAssistant('${assistant.id}')" class="p-1.5 text-gray-400 hover:text-red-600 transition-colors">
+                <button onclick="deleteAssistant('${assistant.id}')" class="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
@@ -228,21 +241,21 @@ const navSections = [
               </div>
             </div>
             
-            <p class="text-sm text-gray-600 mb-4">${assistant.description}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">${assistant.description}</p>
             
-            <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-              <p class="text-xs text-gray-500 mb-1">Instructions:</p>
-              <p class="text-sm text-gray-700 line-clamp-2">${assistant.instructions}</p>
+            <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Instructions:</p>
+              <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">${assistant.instructions}</p>
             </div>
             
             <div class="flex items-center gap-2 flex-wrap mb-4">
               ${assistant.tools.map(tool => `
-                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">${tool}</span>
+                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs rounded-full">${tool}</span>
               `).join('')}
             </div>
             
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-              <span class="text-xs text-gray-500">Created ${new Date(assistant.createdAt).toLocaleDateString()}</span>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+              <span class="text-xs text-gray-500 dark:text-gray-400">Created ${new Date(assistant.createdAt).toLocaleDateString()}</span>
               <button onclick="useAssistant('${assistant.id}')" class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
                 Use Assistant
               </button>
@@ -329,7 +342,11 @@ const navSections = [
       };
 
       (window as any).useAssistant = (id: string) => {
-        alert('This would open a chat with the assistant. Navigate to chat page to use assistants.');
+        // Save the selected assistant to settings
+        dataStore.updateSettings({ selectedAssistant: id });
+        // Navigate to chat
+        const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+        window.location.href = `${baseUrl}chat-prompts/`;
       };
 
       loadAssistants();

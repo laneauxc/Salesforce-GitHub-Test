@@ -1,0 +1,256 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <style>
+      /* Smooth transition for dark mode */
+      * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+      }
+    </style>
+  </head>
+  <body class="bg-white dark:bg-gray-900">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-4xl mx-auto p-8">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Settings</h1>
+            <p class="text-gray-600 dark:text-gray-400">Manage your application preferences and configurations</p>
+          </div>
+
+          <!-- Settings Sections -->
+          <div class="space-y-6">
+            <!-- Appearance Settings -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+              <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Appearance</h2>
+              </div>
+              <div class="p-6 space-y-4">
+                <!-- Dark Mode Toggle -->
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <h3 class="text-sm font-medium text-gray-900 dark:text-white">Dark Mode</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Switch between light and dark themes
+                    </p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="darkModeToggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Preferences -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+              <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">AI Model Preferences</h2>
+              </div>
+              <div class="p-6 space-y-4">
+                <!-- Default Model Selection -->
+                <div>
+                  <label for="defaultModel" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                    Default Model
+                  </label>
+                  <select
+                    id="defaultModel"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="gpt-4">GPT-4</option>
+                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    <option value="claude-3-opus">Claude 3 Opus</option>
+                    <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                  </select>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Select the default AI model to use for chat conversations
+                  </p>
+                </div>
+
+                <!-- Default Assistant Selection -->
+                <div>
+                  <label for="defaultAssistant" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                    Default Assistant
+                  </label>
+                  <select
+                    id="defaultAssistant"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">None (Direct Model)</option>
+                  </select>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Choose a default assistant to use, or leave as None to use the model directly
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- API Configuration -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+              <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">API Configuration</h2>
+              </div>
+              <div class="p-6 space-y-4">
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div class="flex items-start gap-2">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-sm text-blue-800 dark:text-blue-300">
+                      <p class="font-semibold mb-1">Backend Integration Required</p>
+                      <p>To enable full API functionality, configure your backend service and API keys in the API Keys section.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <label for="apiEndpoint" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                    API Endpoint (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    id="apiEndpoint"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    placeholder="https://api.example.com"
+                  />
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Custom API endpoint for backend integration
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-end gap-3">
+              <button
+                type="button"
+                onclick="window.history.back()"
+                class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                id="saveSettingsBtn"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      import { dataStore } from '../utils/dataStore';
+
+      const darkModeToggle = document.getElementById('darkModeToggle') as HTMLInputElement;
+      const defaultModel = document.getElementById('defaultModel') as HTMLSelectElement;
+      const defaultAssistant = document.getElementById('defaultAssistant') as HTMLSelectElement;
+      const apiEndpoint = document.getElementById('apiEndpoint') as HTMLInputElement;
+      const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+      // Load current settings
+      const settings = dataStore.getSettings();
+      const assistants = dataStore.getAssistants();
+
+      // Initialize dark mode
+      darkModeToggle.checked = settings.darkMode;
+      if (settings.darkMode) {
+        document.documentElement.classList.add('dark');
+      }
+
+      // Initialize model selection
+      defaultModel.value = settings.selectedModel;
+
+      // Populate assistants dropdown
+      assistants.forEach(assistant => {
+        const option = document.createElement('option');
+        option.value = assistant.id;
+        option.textContent = assistant.name;
+        if (settings.selectedAssistant === assistant.id) {
+          option.selected = true;
+        }
+        defaultAssistant.appendChild(option);
+      });
+
+      // Handle dark mode toggle
+      darkModeToggle.addEventListener('change', (e) => {
+        const isDark = (e.target as HTMLInputElement).checked;
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      });
+
+      // Handle save settings
+      saveSettingsBtn?.addEventListener('click', () => {
+        dataStore.updateSettings({
+          darkMode: darkModeToggle.checked,
+          selectedModel: defaultModel.value,
+          selectedAssistant: defaultAssistant.value || undefined
+        });
+
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        successMsg.textContent = 'Settings saved successfully!';
+        document.body.appendChild(successMsg);
+        
+        setTimeout(() => {
+          successMsg.remove();
+        }, 3000);
+      });
+    </script>
+  </body>
+</html>

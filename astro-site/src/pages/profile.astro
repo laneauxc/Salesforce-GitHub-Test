@@ -1,0 +1,230 @@
+---
+import SidebarNav from '../components/SidebarNav';
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+
+const navSections = [
+  {
+    header: 'Create',
+    items: [
+      { icon: 'chat', label: 'Chat', href: `${baseUrl}chat-prompts/` },
+      { icon: 'agent-builder', label: 'Agent Builder', href: `${baseUrl}agent-builder/` },
+      { icon: 'audio', label: 'Audio', href: `${baseUrl}audio/` },
+      { icon: 'images', label: 'Images', href: `${baseUrl}images/` },
+      { icon: 'videos', label: 'Videos', href: `${baseUrl}videos/` },
+      { icon: 'assistants', label: 'Assistants', href: `${baseUrl}assistants/` },
+    ],
+  },
+  {
+    header: 'Manage',
+    items: [
+      { icon: 'usage', label: 'Usage', href: `${baseUrl}usage/` },
+      { icon: 'api-keys', label: 'API keys', href: `${baseUrl}api-keys/` },
+      { icon: 'apps', label: 'Apps', href: `${baseUrl}apps/` },
+      { icon: 'logs', label: 'Logs', href: `${baseUrl}logs/` },
+      { icon: 'storage', label: 'Storage', href: `${baseUrl}storage/` },
+      { icon: 'batches', label: 'Batches', href: `${baseUrl}batches/` },
+    ],
+  },
+  {
+    header: 'Optimize',
+    items: [
+      { icon: 'evaluation', label: 'Evaluation', href: `${baseUrl}evaluation/` },
+      { icon: 'fine-tuning', label: 'Fine-tuning', href: `${baseUrl}fine-tuning/` },
+    ],
+  },
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Profile</title>
+  </head>
+  <body class="bg-white dark:bg-gray-900">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <SidebarNav 
+        client:load 
+        sections={navSections}
+      />
+
+      <!-- Main content area -->
+      <main class="flex-1 overflow-y-auto">
+        <div class="max-w-4xl mx-auto p-8">
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Your Profile</h1>
+            <p class="text-gray-600 dark:text-gray-400">Manage your personal information and preferences</p>
+          </div>
+
+          <!-- Profile Form -->
+          <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+            <form id="profileForm" class="p-6 space-y-6">
+              <!-- Avatar Section -->
+              <div class="flex items-start gap-6">
+                <div class="flex-shrink-0">
+                  <div id="avatarDisplay" class="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-2xl overflow-hidden">
+                    JD
+                  </div>
+                  <button
+                    type="button"
+                    id="uploadAvatarBtn"
+                    class="mt-3 px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    Change Photo
+                  </button>
+                  <input type="file" id="avatarInput" accept="image/*" class="hidden" />
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-4">Profile Picture</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Upload a profile picture. Recommended size: 400x400px. Supported formats: JPG, PNG, GIF.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Personal Information -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Personal Information</h3>
+                
+                <div class="space-y-4">
+                  <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name *</label>
+                    <input
+                      type="text"
+                      id="name"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      placeholder="John Doe"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address *</label>
+                    <input
+                      type="email"
+                      id="email"
+                      required
+                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      placeholder="john.doe@example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Role</label>
+                    <input
+                      type="text"
+                      id="role"
+                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      placeholder="Developer"
+                    />
+                  </div>
+
+                  <div>
+                    <label for="organization" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Organization</label>
+                    <input
+                      type="text"
+                      id="organization"
+                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                      placeholder="Salesforce"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Save Button -->
+              <div class="border-t border-gray-200 dark:border-gray-700 pt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onclick="window.history.back()"
+                  class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      import { dataStore } from '../utils/dataStore';
+
+      const profileForm = document.getElementById('profileForm') as HTMLFormElement;
+      const nameInput = document.getElementById('name') as HTMLInputElement;
+      const emailInput = document.getElementById('email') as HTMLInputElement;
+      const roleInput = document.getElementById('role') as HTMLInputElement;
+      const organizationInput = document.getElementById('organization') as HTMLInputElement;
+      const avatarDisplay = document.getElementById('avatarDisplay');
+      const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+      const avatarInput = document.getElementById('avatarInput') as HTMLInputElement;
+
+      // Load current profile
+      const profile = dataStore.getUserProfile();
+      nameInput.value = profile.name;
+      emailInput.value = profile.email;
+      roleInput.value = profile.role || '';
+      organizationInput.value = profile.organization || '';
+
+      if (profile.avatarUrl && avatarDisplay) {
+        avatarDisplay.innerHTML = `<img src="${profile.avatarUrl}" alt="${profile.name}" class="w-full h-full object-cover" />`;
+      } else if (avatarDisplay) {
+        const initials = profile.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        avatarDisplay.textContent = initials;
+      }
+
+      // Handle avatar upload
+      uploadAvatarBtn?.addEventListener('click', () => {
+        avatarInput?.click();
+      });
+
+      avatarInput?.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const avatarUrl = e.target?.result as string;
+            if (avatarDisplay) {
+              avatarDisplay.innerHTML = `<img src="${avatarUrl}" alt="Avatar" class="w-full h-full object-cover" />`;
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Handle form submission
+      profileForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const avatarUrl = avatarDisplay?.querySelector('img')?.src;
+        
+        dataStore.updateUserProfile({
+          name: nameInput.value,
+          email: emailInput.value,
+          role: roleInput.value || undefined,
+          organization: organizationInput.value || undefined,
+          avatarUrl: avatarUrl || undefined
+        });
+
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        successMsg.textContent = 'Profile updated successfully!';
+        document.body.appendChild(successMsg);
+        
+        setTimeout(() => {
+          successMsg.remove();
+        }, 3000);
+      });
+    </script>
+  </body>
+</html>

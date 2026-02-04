@@ -65,6 +65,20 @@ export interface UsageMetric {
   cost: number;
 }
 
+export interface UserProfile {
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  role?: string;
+  organization?: string;
+}
+
+export interface AppSettings {
+  darkMode: boolean;
+  selectedModel: string;
+  selectedAssistant?: string;
+}
+
 class DataStore {
   private conversations: Conversation[] = [];
   private audioRecordings: AudioRecording[] = [];
@@ -73,9 +87,67 @@ class DataStore {
   private apiKeys: ApiKey[] = [];
   private logs: LogEntry[] = [];
   private usageMetrics: UsageMetric[] = [];
+  private userProfile: UserProfile = {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    role: 'Developer',
+    organization: 'Salesforce'
+  };
+  private settings: AppSettings = {
+    darkMode: false,
+    selectedModel: 'gpt-4'
+  };
+  private storageKey = 'salesforce-github-test-data';
 
   constructor() {
-    this.initializeSampleData();
+    this.loadFromStorage();
+    if (this.conversations.length === 0 && this.assistants.length === 0 && this.apiKeys.length === 0) {
+      this.initializeSampleData();
+      this.saveToStorage();
+    }
+  }
+
+  private loadFromStorage() {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const stored = localStorage.getItem(this.storageKey);
+      if (stored) {
+        const data = JSON.parse(stored);
+        this.conversations = data.conversations || [];
+        this.audioRecordings = data.audioRecordings || [];
+        this.imageGenerations = data.imageGenerations || [];
+        this.assistants = data.assistants || [];
+        this.apiKeys = data.apiKeys || [];
+        this.logs = data.logs || [];
+        this.usageMetrics = data.usageMetrics || [];
+        this.userProfile = data.userProfile || this.userProfile;
+        this.settings = data.settings || this.settings;
+      }
+    } catch (error) {
+      console.error('Error loading data from storage:', error);
+    }
+  }
+
+  private saveToStorage() {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      const data = {
+        conversations: this.conversations,
+        audioRecordings: this.audioRecordings,
+        imageGenerations: this.imageGenerations,
+        assistants: this.assistants,
+        apiKeys: this.apiKeys,
+        logs: this.logs,
+        usageMetrics: this.usageMetrics,
+        userProfile: this.userProfile,
+        settings: this.settings
+      };
+      localStorage.setItem(this.storageKey, JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving data to storage:', error);
+    }
   }
 
   private initializeSampleData() {
@@ -198,6 +270,7 @@ class DataStore {
       updatedAt: new Date()
     };
     this.conversations.push(conversation);
+    this.saveToStorage();
     return conversation;
   }
 
@@ -214,6 +287,7 @@ class DataStore {
 
     conversation.messages.push(message);
     conversation.updatedAt = new Date();
+    this.saveToStorage();
     return message;
   }
 
@@ -232,6 +306,7 @@ class DataStore {
       createdAt: new Date()
     };
     this.audioRecordings.push(recording);
+    this.saveToStorage();
     return recording;
   }
 
@@ -248,6 +323,7 @@ class DataStore {
       createdAt: new Date()
     };
     this.imageGenerations.push(image);
+    this.saveToStorage();
     return image;
   }
 
@@ -267,6 +343,7 @@ class DataStore {
       createdAt: new Date()
     };
     this.assistants.push(assistant);
+    this.saveToStorage();
     return assistant;
   }
 
@@ -274,6 +351,7 @@ class DataStore {
     const assistant = this.getAssistant(id);
     if (!assistant) return undefined;
     Object.assign(assistant, data);
+    this.saveToStorage();
     return assistant;
   }
 
@@ -281,6 +359,7 @@ class DataStore {
     const index = this.assistants.findIndex(a => a.id === id);
     if (index === -1) return false;
     this.assistants.splice(index, 1);
+    this.saveToStorage();
     return true;
   }
 
@@ -290,20 +369,44 @@ class DataStore {
   }
 
   createApiKey(name: string): ApiKey {
-    const key: ApiKey = {
-      id: `key-${Date.now()}`,
-      name,
-      key: `sk-proj-${Math.random().toString(36).substring(2, 15)}...${Math.random().toString(36).substring(2, 5)}`,
-      createdAt: new Date()
-    };
-    this.apiKeys.push(key);
-    return key;
+    // Generate a cryptographically secure API key
+    // Note: In production, API keys should be generated server-side
+    const array = new Uint8Array(32);
+    if (typeof window !== 'undefined' && window.crypto) {
+      window.crypto.getRandomValues(array);
+      const randomString = Array.from(array, byte => byte.toString(36)).join('').substring(0, 40);
+      const key: ApiKey = {
+        id: `key-${Date.now()}`,
+        name,
+        key: `sk-proj-${randomString}`,
+        createdAt: new Date()
+      };
+      this.apiKeys.push(key);
+      this.saveToStorage();
+      return key;
+    } else {
+      // Fallback for server-side rendering (not secure, for demo only)
+      const randomPart1 = Math.random().toString(36).substring(2, 15);
+      const randomPart2 = Math.random().toString(36).substring(2, 15);
+      const randomPart3 = Math.random().toString(36).substring(2, 15);
+      const randomPart4 = Math.random().toString(36).substring(2, 7);
+      const key: ApiKey = {
+        id: `key-${Date.now()}`,
+        name,
+        key: `sk-proj-${randomPart1}${randomPart2}${randomPart3}${randomPart4}`,
+        createdAt: new Date()
+      };
+      this.apiKeys.push(key);
+      this.saveToStorage();
+      return key;
+    }
   }
 
   deleteApiKey(id: string): boolean {
     const index = this.apiKeys.findIndex(k => k.id === id);
     if (index === -1) return false;
     this.apiKeys.splice(index, 1);
+    this.saveToStorage();
     return true;
   }
 
@@ -321,12 +424,39 @@ class DataStore {
       details
     };
     this.logs.unshift(log); // Add to beginning
+    this.saveToStorage();
     return log;
   }
 
   // Usage
   getUsageMetrics(): UsageMetric[] {
     return this.usageMetrics;
+  }
+
+  // Profile
+  getUserProfile(): UserProfile {
+    return this.userProfile;
+  }
+
+  updateUserProfile(data: Partial<UserProfile>): UserProfile {
+    this.userProfile = { ...this.userProfile, ...data };
+    this.saveToStorage();
+    return this.userProfile;
+  }
+
+  // Settings
+  getSettings(): AppSettings {
+    return this.settings;
+  }
+
+  updateSettings(data: Partial<AppSettings>): AppSettings {
+    this.settings = { ...this.settings, ...data };
+    this.saveToStorage();
+    // Dispatch event for dark mode changes
+    if (data.darkMode !== undefined && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('darkModeChange', { detail: { darkMode: data.darkMode } }));
+    }
+    return this.settings;
   }
 }
 
