@@ -369,21 +369,37 @@ class DataStore {
   }
 
   createApiKey(name: string): ApiKey {
-    // Generate a proper full API key instead of truncated
-    const randomPart1 = Math.random().toString(36).substring(2, 15);
-    const randomPart2 = Math.random().toString(36).substring(2, 15);
-    const randomPart3 = Math.random().toString(36).substring(2, 15);
-    const randomPart4 = Math.random().toString(36).substring(2, 7);
-    
-    const key: ApiKey = {
-      id: `key-${Date.now()}`,
-      name,
-      key: `sk-proj-${randomPart1}${randomPart2}${randomPart3}${randomPart4}`,
-      createdAt: new Date()
-    };
-    this.apiKeys.push(key);
-    this.saveToStorage();
-    return key;
+    // Generate a cryptographically secure API key
+    // Note: In production, API keys should be generated server-side
+    const array = new Uint8Array(32);
+    if (typeof window !== 'undefined' && window.crypto) {
+      window.crypto.getRandomValues(array);
+      const randomString = Array.from(array, byte => byte.toString(36)).join('').substring(0, 40);
+      const key: ApiKey = {
+        id: `key-${Date.now()}`,
+        name,
+        key: `sk-proj-${randomString}`,
+        createdAt: new Date()
+      };
+      this.apiKeys.push(key);
+      this.saveToStorage();
+      return key;
+    } else {
+      // Fallback for server-side rendering (not secure, for demo only)
+      const randomPart1 = Math.random().toString(36).substring(2, 15);
+      const randomPart2 = Math.random().toString(36).substring(2, 15);
+      const randomPart3 = Math.random().toString(36).substring(2, 15);
+      const randomPart4 = Math.random().toString(36).substring(2, 7);
+      const key: ApiKey = {
+        id: `key-${Date.now()}`,
+        name,
+        key: `sk-proj-${randomPart1}${randomPart2}${randomPart3}${randomPart4}`,
+        createdAt: new Date()
+      };
+      this.apiKeys.push(key);
+      this.saveToStorage();
+      return key;
+    }
   }
 
   deleteApiKey(id: string): boolean {

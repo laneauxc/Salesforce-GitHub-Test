@@ -78,7 +78,7 @@ const navSections = [
     
     <script>
       // Listen for dark mode changes
-      window.addEventListener('darkModeChange', (e: any) => {
+      window.addEventListener('darkModeChange', (e: CustomEvent<{ darkMode: boolean }>) => {
         if (e.detail.darkMode) {
           document.documentElement.classList.add('dark');
         } else {
