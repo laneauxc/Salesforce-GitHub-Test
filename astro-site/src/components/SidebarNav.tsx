@@ -20,12 +20,12 @@ interface SidebarNavProps {
 
 export default function SidebarNav({ sections }: SidebarNavProps) {
   return (
-    <div className="w-64 h-screen bg-gray-50 border-r border-gray-200 flex flex-col">
+    <div className="w-64 h-screen bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
       <div className="flex-1 overflow-y-auto py-4">
         {sections.map((section, idx) => (
           <div key={idx} className="mb-6">
             <div className="px-6 mb-2">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {section.header}
               </h3>
             </div>
@@ -45,8 +45,8 @@ export default function SidebarNav({ sections }: SidebarNavProps) {
                     transition-colors duration-150
                     ${
                       item.selected
-                        ? 'bg-gray-200 text-gray-900 font-medium'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-medium'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                     }
                   `}
                 >
