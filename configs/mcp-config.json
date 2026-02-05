@@ -1,0 +1,66 @@
+{
+  "sync": {
+    "enabled": true,
+    "mode": "bidirectional",
+    "retryAttempts": 3,
+    "retryDelaySeconds": 300,
+    "nightlySyncTime": "00:00"
+  },
+  "github": {
+    "defaultRepo": "laneauxc/Salesforce-GitHub-Test",
+    "labelPrefix": "Salesforce-Case",
+    "mcpMetadataMarker": "<!-- MCP-METADATA -->",
+    "syncLabels": {
+      "synced": "sf-synced",
+      "syncError": "sf-sync-error",
+      "pendingSync": "sf-pending-sync"
+    }
+  },
+  "salesforce": {
+    "caseIdField": "caseId",
+    "caseNumberField": "caseNumber",
+    "statusMapping": {
+      "New": "open",
+      "In Progress": "open",
+      "Waiting on Customer": "open",
+      "Escalated": "open",
+      "Closed": "closed",
+      "Resolved": "closed"
+    }
+  },
+  "triggers": {
+    "onCreate": true,
+    "onComment": true,
+    "onStatusChange": true,
+    "onPRMerge": {
+      "enabled": true,
+      "autoCloseCase": false,
+      "nightlyCheck": true,
+      "immediateClose": false
+    }
+  },
+  "fieldMappings": {
+    "salesforceToGithub": {
+      "Subject": "title",
+      "Description": "body",
+      "Status": "state",
+      "Priority": "labels"
+    },
+    "githubToSalesforce": {
+      "title": "Subject",
+      "body": "Description",
+      "state": "Status",
+      "labels": "Priority"
+    }
+  },
+  "notifications": {
+    "onSyncSuccess": false,
+    "onSyncFailure": true,
+    "failureTemplate": ":warning: **Salesforce Sync Failed**\n\nThe synchronization with Salesforce failed. The system will retry at the next scheduled sync (midnight UTC).\n\n**Error**: {error}\n**Timestamp**: {timestamp}"
+  },
+  "audit": {
+    "enabled": true,
+    "logLevel": "info",
+    "logEvents": ["creation", "statusChange", "closure", "comment", "error"]
+  }
+}

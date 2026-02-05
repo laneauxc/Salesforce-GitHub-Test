@@ -1,0 +1,212 @@
+name: MCP GitHub Webhook Handler
+
+on:
+  issues:
+    types: [opened, edited, closed, reopened]
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [opened, edited, closed, reopened]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  handle-webhook:
+    runs-on: ubuntu-latest
+    name: Handle GitHub Event
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          cd /tmp
+          npm init -y
+          npm install @octokit/rest
+      
+      - name: Handle Event
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SALESFORCE_INSTANCE_URL: ${{ secrets.SALESFORCE_INSTANCE_URL }}
+          SALESFORCE_USERNAME: ${{ secrets.SALESFORCE_USERNAME }}
+          SALESFORCE_PASSWORD: ${{ secrets.SALESFORCE_PASSWORD }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Copy source files to tmp
+          const srcFiles = ['mcp-utils.js', 'github-client.js', 'salesforce-client.js', 'sync-orchestrator.js'];
+          const workdir = process.cwd();
+          
+          srcFiles.forEach(file => {
+            const src = path.join(workdir, 'src', file);
+            const dest = path.join('/tmp', file);
+            if (fs.existsSync(src)) {
+              fs.copyFileSync(src, dest);
+            }
+          });
+          
+          // Copy config
+          const configSrc = path.join(workdir, 'configs', 'mcp-config.json');
+          const configDest = path.join('/tmp', 'configs', 'mcp-config.json');
+          fs.mkdirSync(path.dirname(configDest), { recursive: true });
+          if (fs.existsSync(configSrc)) {
+            fs.copyFileSync(configSrc, configDest);
+          }
+          
+          // Change to tmp directory
+          process.chdir('/tmp');
+          
+          const MCPSyncOrchestrator = require('./sync-orchestrator.js');
+          const { loadConfig } = require('./mcp-utils.js');
+          
+          async function handleEvent() {
+            const eventName = process.env.EVENT_NAME;
+            const action = process.env.EVENT_ACTION;
+            
+            console.log(`Handling event: ${eventName} - ${action}`);
+            
+            const githubToken = process.env.GITHUB_TOKEN;
+            const salesforceCredentials = {
+              instanceUrl: process.env.SALESFORCE_INSTANCE_URL || 'https://example.salesforce.com',
+              username: process.env.SALESFORCE_USERNAME,
+              password: process.env.SALESFORCE_PASSWORD
+            };
+            
+            const orchestrator = new MCPSyncOrchestrator(githubToken, salesforceCredentials);
+            const config = loadConfig();
+            
+            // Read GitHub event payload
+            const eventPath = process.env.GITHUB_EVENT_PATH;
+            const event = JSON.parse(fs.readFileSync(eventPath, 'utf8'));
+            
+            const [owner, repo] = (process.env.GITHUB_REPOSITORY || '').split('/');
+            
+            try {
+              // Handle different event types
+              if (eventName === 'issues') {
+                if (action === 'opened' && config.triggers.onCreate) {
+                  const issueNumber = event.issue.number;
+                  console.log(`New issue created: #${issueNumber}`);
+                  
+                  // Check if issue already has Salesforce metadata
+                  const hasMetadata = event.issue.body && event.issue.body.includes('<!-- MCP-METADATA -->');
+                  
+                  if (!hasMetadata) {
+                    // Sync to Salesforce
+                    try {
+                      await orchestrator.syncGitHubToSalesforce(owner, repo, issueNumber);
+                      console.log(`Successfully synced issue #${issueNumber} to Salesforce`);
+                    } catch (error) {
+                      console.error(`Failed to sync issue #${issueNumber}:`, error.message);
+                      await orchestrator.notifySyncFailure(owner, repo, issueNumber, error);
+                    }
+                  }
+                } else if ((action === 'closed' || action === 'reopened') && config.triggers.onStatusChange) {
+                  const issueNumber = event.issue.number;
+                  const newState = action === 'closed' ? 'closed' : 'open';
+                  console.log(`Issue #${issueNumber} ${action}`);
+                  
+                  try {
+                    await orchestrator.syncStatusToSalesforce(owner, repo, issueNumber, newState);
+                    console.log(`Successfully synced status change for issue #${issueNumber}`);
+                  } catch (error) {
+                    console.error(`Failed to sync status for issue #${issueNumber}:`, error.message);
+                    await orchestrator.notifySyncFailure(owner, repo, issueNumber, error);
+                  }
+                }
+              } else if (eventName === 'issue_comment' && config.triggers.onComment) {
+                const issueNumber = event.issue.number;
+                const commentBody = event.comment.body;
+                console.log(`New comment on issue #${issueNumber}`);
+                
+                try {
+                  await orchestrator.syncCommentToSalesforce(owner, repo, issueNumber, commentBody);
+                  console.log(`Successfully synced comment to Salesforce`);
+                } catch (error) {
+                  console.error(`Failed to sync comment:`, error.message);
+                  // Don't notify for comment sync failures
+                }
+              } else if (eventName === 'pull_request') {
+                const prNumber = event.pull_request.number;
+                
+                if (action === 'opened' && config.triggers.onCreate) {
+                  console.log(`New PR created: #${prNumber}`);
+                  
+                  const hasMetadata = event.pull_request.body && 
+                    event.pull_request.body.includes('<!-- MCP-METADATA -->');
+                  
+                  if (!hasMetadata) {
+                    try {
+                      await orchestrator.syncGitHubToSalesforce(owner, repo, prNumber);
+                      console.log(`Successfully synced PR #${prNumber} to Salesforce`);
+                    } catch (error) {
+                      console.error(`Failed to sync PR #${prNumber}:`, error.message);
+                      await orchestrator.notifySyncFailure(owner, repo, prNumber, error);
+                    }
+                  }
+                } else if (action === 'closed' && event.pull_request.merged) {
+                  console.log(`PR #${prNumber} merged`);
+                  
+                  if (config.triggers.onPRMerge.enabled) {
+                    try {
+                      await orchestrator.handlePRMerge(owner, repo, prNumber);
+                      console.log(`Successfully handled PR merge for #${prNumber}`);
+                    } catch (error) {
+                      console.error(`Failed to handle PR merge:`, error.message);
+                    }
+                  }
+                } else if ((action === 'closed' || action === 'reopened') && config.triggers.onStatusChange) {
+                  const newState = action === 'closed' ? 'closed' : 'open';
+                  console.log(`PR #${prNumber} ${action}`);
+                  
+                  try {
+                    await orchestrator.syncStatusToSalesforce(owner, repo, prNumber, newState);
+                    console.log(`Successfully synced status change for PR #${prNumber}`);
+                  } catch (error) {
+                    console.error(`Failed to sync status for PR #${prNumber}:`, error.message);
+                  }
+                }
+              } else if (eventName === 'pull_request_review_comment' && config.triggers.onComment) {
+                const prNumber = event.pull_request.number;
+                const commentBody = event.comment.body;
+                console.log(`New review comment on PR #${prNumber}`);
+                
+                try {
+                  await orchestrator.syncCommentToSalesforce(owner, repo, prNumber, commentBody);
+                  console.log(`Successfully synced review comment to Salesforce`);
+                } catch (error) {
+                  console.error(`Failed to sync review comment:`, error.message);
+                }
+              }
+              
+              console.log('Event handling completed');
+            } catch (error) {
+              console.error('Error handling event:', error);
+              throw error;
+            }
+          }
+          
+          handleEvent().catch(error => {
+            console.error('Webhook handler failed:', error);
+            process.exit(1);
+          });
+          EOF
+      
+      - name: Log completion
+        if: always()
+        run: echo "Webhook handler completed"

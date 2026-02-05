@@ -1,0 +1,180 @@
+name: MCP Nightly Sync
+
+on:
+  schedule:
+    # Run every day at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  nightly-sync:
+    runs-on: ubuntu-latest
+    name: Nightly MCP Sync
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          cd /tmp
+          npm init -y
+          npm install @octokit/rest
+      
+      - name: Run nightly sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SALESFORCE_INSTANCE_URL: ${{ secrets.SALESFORCE_INSTANCE_URL }}
+          SALESFORCE_USERNAME: ${{ secrets.SALESFORCE_USERNAME }}
+          SALESFORCE_PASSWORD: ${{ secrets.SALESFORCE_PASSWORD }}
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Copy source files to tmp
+          const srcFiles = ['mcp-utils.js', 'github-client.js', 'salesforce-client.js', 'sync-orchestrator.js'];
+          const workdir = process.cwd();
+          
+          srcFiles.forEach(file => {
+            const src = path.join(workdir, 'src', file);
+            const dest = path.join('/tmp', file);
+            if (fs.existsSync(src)) {
+              fs.copyFileSync(src, dest);
+            }
+          });
+          
+          // Copy config
+          const configSrc = path.join(workdir, 'configs', 'mcp-config.json');
+          const configDest = path.join('/tmp', 'configs', 'mcp-config.json');
+          fs.mkdirSync(path.dirname(configDest), { recursive: true });
+          if (fs.existsSync(configSrc)) {
+            fs.copyFileSync(configSrc, configDest);
+          }
+          
+          // Change to tmp directory
+          process.chdir('/tmp');
+          
+          const { Octokit } = require('@octokit/rest');
+          const MCPSyncOrchestrator = require('./sync-orchestrator.js');
+          
+          async function nightlySync() {
+            console.log('Starting nightly MCP sync...');
+            
+            const githubToken = process.env.GITHUB_TOKEN;
+            const salesforceCredentials = {
+              instanceUrl: process.env.SALESFORCE_INSTANCE_URL || 'https://example.salesforce.com',
+              username: process.env.SALESFORCE_USERNAME,
+              password: process.env.SALESFORCE_PASSWORD
+            };
+            
+            const orchestrator = new MCPSyncOrchestrator(githubToken, salesforceCredentials);
+            const octokit = new Octokit({ auth: githubToken });
+            
+            // Get repository info
+            const [owner, repo] = (process.env.GITHUB_REPOSITORY || '').split('/');
+            
+            if (!owner || !repo) {
+              console.error('Repository information not available');
+              return;
+            }
+            
+            // Check for merged PRs with linked Salesforce cases
+            try {
+              const { data: pulls } = await octokit.pulls.list({
+                owner,
+                repo,
+                state: 'closed',
+                per_page: 100
+              });
+              
+              for (const pr of pulls) {
+                if (pr.merged_at) {
+                  // Check if PR has MCP metadata
+                  const metadata = pr.body ? parseMCPMetadata(pr.body) : null;
+                  
+                  if (metadata && metadata.salesforce.caseId) {
+                    console.log(`Checking PR #${pr.number} - Case ${metadata.salesforce.caseNumber}`);
+                    
+                    // Handle based on config
+                    const config = require('./mcp-utils.js').loadConfig();
+                    if (config.triggers.onPRMerge.nightlyCheck) {
+                      await orchestrator.handlePRMerge(owner, repo, pr.number);
+                    }
+                  }
+                }
+              }
+              
+              // Retry failed syncs
+              const { data: issues } = await octokit.issues.listForRepo({
+                owner,
+                repo,
+                labels: 'sf-sync-error',
+                state: 'open',
+                per_page: 50
+              });
+              
+              console.log(`Found ${issues.length} issues with sync errors, retrying...`);
+              
+              for (const issue of issues) {
+                try {
+                  console.log(`Retrying sync for issue #${issue.number}`);
+                  await orchestrator.syncGitHubToSalesforce(owner, repo, issue.number);
+                  
+                  // Remove error label if successful
+                  await octokit.issues.removeLabel({
+                    owner,
+                    repo,
+                    issue_number: issue.number,
+                    name: 'sf-sync-error'
+                  });
+                  
+                  // Add success comment
+                  await octokit.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: issue.number,
+                    body: '✅ **Sync Successful**\n\nThe synchronization with Salesforce has been completed successfully during the nightly sync.'
+                  });
+                } catch (error) {
+                  console.error(`Failed to retry sync for issue #${issue.number}:`, error.message);
+                }
+              }
+              
+              console.log('Nightly sync completed');
+            } catch (error) {
+              console.error('Error during nightly sync:', error);
+              throw error;
+            }
+          }
+          
+          function parseMCPMetadata(body) {
+            const regex = /<!-- MCP-METADATA -->\s*```json\s*([\s\S]*?)```\s*<!-- MCP-METADATA -->/m;
+            const match = body.match(regex);
+            if (!match) return null;
+            try {
+              return JSON.parse(match[1]);
+            } catch (e) {
+              return null;
+            }
+          }
+          
+          nightlySync().catch(error => {
+            console.error('Nightly sync failed:', error);
+            process.exit(1);
+          });
+          EOF
+      
+      - name: Log completion
+        if: always()
+        run: echo "Nightly sync workflow completed"

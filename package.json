@@ -1,0 +1,31 @@
+{
+  "name": "mcp-github-salesforce-sync",
+  "version": "1.0.0",
+  "description": "MCP Automation for bidirectional GitHub-Salesforce synchronization",
+  "main": "src/sync-orchestrator.js",
+  "scripts": {
+    "validate-config": "node -e \"console.log('Config valid:', JSON.parse(require('fs').readFileSync('./configs/mcp-config.json')))\"",
+    "test": "node tests/test-modules.js",
+    "test:utils": "node -e \"require('./src/mcp-utils.js'); console.log('✅ MCP Utils loaded successfully')\""
+  },
+  "keywords": [
+    "mcp",
+    "salesforce",
+    "github",
+    "sync",
+    "automation"
+  ],
+  "author": "MCP Automation Team",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^20.0.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laneauxc/Salesforce-GitHub-Test.git"
+  }
+}
