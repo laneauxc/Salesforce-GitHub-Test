@@ -5,7 +5,8 @@
   "main": "src/sync-orchestrator.js",
   "scripts": {
     "validate-config": "node -e \"console.log('Config valid:', JSON.parse(require('fs').readFileSync('./configs/mcp-config.json')))\"",
-    "test": "echo \"No tests configured yet\" && exit 0"
+    "test": "node tests/test-modules.js",
+    "test:utils": "node -e \"require('./src/mcp-utils.js'); console.log('✅ MCP Utils loaded successfully')\""
   },
   "keywords": [
     "mcp",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@octokit/rest": "^20.0.0"
   },
+  "devDependencies": {},
   "engines": {
     "node": ">=20.0.0"
   },
