@@ -11,3 +11,16 @@ node_modules/
 # Build output
 dist/
 build/
+
+# MCP temporary files
+/tmp/
+*.log
+
+# Environment and secrets
+.env
+.env.local
+secrets.json
+
+# MCP test data
+test-data/
+*.test.json
