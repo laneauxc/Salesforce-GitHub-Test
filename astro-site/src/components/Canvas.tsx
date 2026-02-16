@@ -3,6 +3,7 @@ import NodeCard, { type Node } from './NodeCard';
 import EdgeRenderer, { type Edge } from './EdgeRenderer';
 import TopControls from './TopControls';
 import BottomControls from './BottomControls';
+import { Button } from '@heroui/react';
 
 interface HistoryState {
   nodes: Node[];
@@ -247,28 +248,31 @@ export default function Canvas() {
   };
 
   return (
-    <div className="flex-1 relative bg-gray-100">
+    <div className="flex-1 relative bg-neutral-50 dark:bg-neutral-900">
       <TopControls />
       
       {/* Connection Mode Control - positioned below TopControls to avoid overlap */}
       <div className="absolute top-16 right-4 z-20 flex gap-2">
-        <button
+        <Button
           onClick={toggleConnectionMode}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-lg ${
-            isConnecting
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-          }`}
+          color={isConnecting ? "default" : "default"}
+          variant={isConnecting ? "solid" : "bordered"}
+          className={isConnecting 
+            ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-lg" 
+            : "bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600 shadow-lg"
+          }
         >
           {isConnecting ? 'Connecting...' : 'Connect Nodes'}
-        </button>
+        </Button>
         {isConnecting && (
-          <button
+          <Button
             onClick={cancelConnection}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-lg"
+            color="danger"
+            variant="solid"
+            className="shadow-lg"
           >
             Cancel
-          </button>
+          </Button>
         )}
       </div>
       
