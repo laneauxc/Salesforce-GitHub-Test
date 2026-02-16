@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { dataStore, type Message } from '../utils/dataStore';
+import { Button, Input, Textarea, Select, SelectItem, Card, CardBody, Avatar, Chip } from '@heroui/react';
 
 interface ChatInterfaceProps {
   onCreateAgentClick?: () => void;
@@ -80,47 +81,52 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
   if (messages.length === 0) {
     // Initial state - show welcome screen
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-neutral-50 dark:bg-neutral-900">
         {/* Model/Assistant Selector Header */}
-        <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4">
-          <div className="flex items-center justify-between max-w-3xl mx-auto">
-            <div className="flex items-center gap-4">
-              <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Model</label>
-                <select
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="gpt-4">GPT-4</option>
-                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                  <option value="claude-3-opus">Claude 3 Opus</option>
-                  <option value="claude-3-sonnet">Claude 3 Sonnet</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Assistant</label>
-                <select
-                  value={selectedAssistant || ''}
-                  onChange={(e) => setSelectedAssistant(e.target.value || null)}
-                  className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="">None (Direct)</option>
-                  {assistants.map(assistant => (
-                    <option key={assistant.id} value={assistant.id}>{assistant.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+        <div className="border-b border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-6 py-4">
+          <div className="flex items-center justify-between max-w-3xl mx-auto gap-4">
+            <Select
+              label="Model"
+              selectedKeys={[selectedModel]}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              size="sm"
+              variant="bordered"
+              className="max-w-[200px]"
+              classNames={{
+                trigger: "bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600",
+              }}
+            >
+              <SelectItem key="gpt-4" value="gpt-4">GPT-4</SelectItem>
+              <SelectItem key="gpt-4-turbo" value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+              <SelectItem key="gpt-3.5-turbo" value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+              <SelectItem key="claude-3-opus" value="claude-3-opus">Claude 3 Opus</SelectItem>
+              <SelectItem key="claude-3-sonnet" value="claude-3-sonnet">Claude 3 Sonnet</SelectItem>
+            </Select>
+            
+            <Select
+              label="Assistant"
+              selectedKeys={selectedAssistant ? [selectedAssistant] : ['']}
+              onChange={(e) => setSelectedAssistant(e.target.value || null)}
+              size="sm"
+              variant="bordered"
+              className="max-w-[200px]"
+              classNames={{
+                trigger: "bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600",
+              }}
+            >
+              <SelectItem key="" value="">None (Direct)</SelectItem>
+              {assistants.map(assistant => (
+                <SelectItem key={assistant.id} value={assistant.id}>{assistant.name}</SelectItem>
+              ))}
+            </Select>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center flex-1 gap-6 max-w-3xl mx-auto px-8">
+        <div className="flex flex-col items-center justify-center flex-1 gap-8 max-w-3xl mx-auto px-8">
           {/* Icon */}
-          <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+          <div className="w-20 h-20 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-blue-500 dark:text-blue-400"
+              className="w-10 h-10 text-neutral-700 dark:text-neutral-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -128,38 +134,250 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
               />
             </svg>
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Create a chat prompt</h2>
+          <h2 className="text-3xl font-semibold text-neutral-900 dark:text-neutral-100">Create a chat prompt</h2>
 
           {/* Input row */}
           <div className="w-full flex gap-3">
-            <button
+            <Button
               onClick={onCreateAgentClick}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2 whitespace-nowrap"
+              color="default"
+              variant="solid"
+              size="lg"
+              className="bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+              startContent={<span className="text-lg">+</span>}
             >
-              <span>+</span>
-              <span>Create</span>
-            </button>
+              Create
+            </Button>
 
-            <div className="flex-1 relative flex items-center">
-              <textarea
+            <div className="flex-1 relative">
+              <Textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Generate..."
-                rows={1}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-12 resize-none dark:bg-gray-700 dark:text-white"
+                minRows={1}
+                maxRows={3}
+                variant="bordered"
+                classNames={{
+                  input: "bg-white dark:bg-neutral-800",
+                  inputWrapper: "border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800",
+                }}
+                endContent={
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    onClick={handleSendMessage}
+                    isDisabled={!inputValue.trim()}
+                    className="text-neutral-600 dark:text-neutral-400"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </Button>
+                }
               />
-              <button
+            </div>
+          </div>
+
+          {/* Suggestion chips */}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {suggestions.map((suggestion, idx) => (
+              <Chip
+                key={idx}
+                onClick={() => handleSuggestionClick(suggestion)}
+                variant="flat"
+                className="cursor-pointer bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-600"
+              >
+                {suggestion}
+              </Chip>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Chat view
+  return (
+    <div className="flex flex-col h-full bg-neutral-50 dark:bg-neutral-900">
+      {/* Model/Assistant Selector Header */}
+      <div className="border-b border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-4 py-3">
+        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Select
+              label="Model"
+              selectedKeys={[selectedModel]}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              size="sm"
+              variant="bordered"
+              className="max-w-[180px]"
+              classNames={{
+                trigger: "bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600",
+              }}
+            >
+              <SelectItem key="gpt-4" value="gpt-4">GPT-4</SelectItem>
+              <SelectItem key="gpt-4-turbo" value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+              <SelectItem key="gpt-3.5-turbo" value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+              <SelectItem key="claude-3-opus" value="claude-3-opus">Claude 3 Opus</SelectItem>
+              <SelectItem key="claude-3-sonnet" value="claude-3-sonnet">Claude 3 Sonnet</SelectItem>
+            </Select>
+            
+            <Select
+              label="Assistant"
+              selectedKeys={selectedAssistant ? [selectedAssistant] : ['']}
+              onChange={(e) => setSelectedAssistant(e.target.value || null)}
+              size="sm"
+              variant="bordered"
+              className="max-w-[180px]"
+              classNames={{
+                trigger: "bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600",
+              }}
+            >
+              <SelectItem key="" value="">None (Direct)</SelectItem>
+              {assistants.map(assistant => (
+                <SelectItem key={assistant.id} value={assistant.id}>{assistant.name}</SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="text-xs text-neutral-500 dark:text-neutral-400">
+            {selectedAssistant ? (
+              <span>Using: {assistants.find(a => a.id === selectedAssistant)?.name}</span>
+            ) : (
+              <span>Using: {selectedModel}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Messages area */}
+      <div className="flex-1 overflow-y-auto px-4 py-6">
+        <div className="max-w-3xl mx-auto space-y-6">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}
+            >
+              {message.role === 'assistant' && (
+                <Avatar 
+                  size="sm"
+                  className="bg-neutral-800 dark:bg-neutral-200 text-white dark:text-neutral-900 flex-shrink-0"
+                  icon={
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  }
+                />
+              )}
+              
+              <div
+                className={`flex flex-col max-w-[80%] ${
+                  message.role === 'user' ? 'items-end' : ''
+                }`}
+              >
+                <Card
+                  className={`${
+                    message.role === 'user'
+                      ? 'bg-neutral-900 dark:bg-neutral-100'
+                      : 'bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700'
+                  }`}
+                >
+                  <CardBody className="py-3 px-4">
+                    <pre className={`whitespace-pre-wrap font-sans text-sm ${
+                      message.role === 'user'
+                        ? 'text-white dark:text-neutral-900'
+                        : 'text-neutral-900 dark:text-neutral-100'
+                    }`}>
+                      {message.content}
+                    </pre>
+                  </CardBody>
+                </Card>
+                <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 px-1">
+                  {new Date(message.timestamp).toLocaleTimeString()}
+                </div>
+              </div>
+
+              {message.role === 'user' && (
+                <Avatar 
+                  size="sm"
+                  className="bg-neutral-600 dark:bg-neutral-400 text-white dark:text-neutral-900 flex-shrink-0"
+                  icon={
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  }
+                />
+              )}
+            </div>
+          ))}
+
+          {isLoading && (
+            <div className="flex gap-4">
+              <Avatar 
+                size="sm"
+                className="bg-neutral-800 dark:bg-neutral-200 text-white dark:text-neutral-900 flex-shrink-0"
+                icon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                }
+              />
+              <Card className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+                <CardBody className="py-3 px-4">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-neutral-400 dark:bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-neutral-400 dark:bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-neutral-400 dark:bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
+
+      {/* Input area */}
+      <div className="border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-4 py-4">
+        <div className="max-w-3xl mx-auto">
+          <Textarea
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            minRows={1}
+            maxRows={4}
+            variant="bordered"
+            classNames={{
+              input: "bg-white dark:bg-neutral-800",
+              inputWrapper: "border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800",
+            }}
+            endContent={
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
                 onClick={handleSendMessage}
-                disabled={!inputValue.trim()}
-                className="absolute right-2 p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                isDisabled={!inputValue.trim() || isLoading}
+                className="text-neutral-600 dark:text-neutral-400"
               >
                 <svg
                   className="w-5 h-5"
@@ -174,172 +392,9 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
                     d="M14 5l7 7m0 0l-7 7m7-7H3"
                   />
                 </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Suggestion chips */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            {suggestions.map((suggestion, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Chat view
-  return (
-    <div className="flex flex-col h-full">
-      {/* Model/Assistant Selector Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
-              <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Model</label>
-              <select
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value)}
-                className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              >
-                <option value="gpt-4">GPT-4</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="claude-3-opus">Claude 3 Opus</option>
-                <option value="claude-3-sonnet">Claude 3 Sonnet</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Assistant</label>
-              <select
-                value={selectedAssistant || ''}
-                onChange={(e) => setSelectedAssistant(e.target.value || null)}
-                className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              >
-                <option value="">None (Direct)</option>
-                {assistants.map(assistant => (
-                  <option key={assistant.id} value={assistant.id}>{assistant.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {selectedAssistant ? (
-              <span>Using: {assistants.find(a => a.id === selectedAssistant)?.name}</span>
-            ) : (
-              <span>Using: {selectedModel}</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 dark:bg-gray-900">
-        <div className="max-w-3xl mx-auto space-y-6">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}
-            >
-              {message.role === 'assistant' && (
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              )}
-              
-              <div
-                className={`flex flex-col max-w-[80%] ${
-                  message.role === 'user' ? 'items-end' : ''
-                }`}
-              >
-                <div
-                  className={`px-4 py-3 rounded-lg ${
-                    message.role === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
-                  }`}
-                >
-                  <pre className="whitespace-pre-wrap font-sans text-sm">
-                    {message.content}
-                  </pre>
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 px-1">
-                  {new Date(message.timestamp).toLocaleTimeString()}
-                </div>
-              </div>
-
-              {message.role === 'user' && (
-                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-              )}
-            </div>
-          ))}
-
-          {isLoading && (
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-
-      {/* Input area */}
-      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4">
-        <div className="max-w-3xl mx-auto flex gap-3">
-          <div className="flex-1 relative flex items-center">
-            <textarea
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              rows={1}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-12 resize-none dark:bg-gray-700 dark:text-white"
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className="absolute right-2 p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </button>
-          </div>
+              </Button>
+            }
+          />
         </div>
       </div>
     </div>

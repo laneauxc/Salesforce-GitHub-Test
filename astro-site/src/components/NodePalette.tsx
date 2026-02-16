@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from './Icon';
+import { Card, CardBody } from '@heroui/react';
 
 interface NodeType {
   type: string;
@@ -61,24 +62,27 @@ export default function NodePalette({ onNodeDragStart }: NodePaletteProps) {
   };
 
   return (
-    <div className="w-64 h-full bg-gray-50 border-r border-gray-200 overflow-y-auto">
+    <div className="w-64 h-full bg-white dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 overflow-y-auto">
       <div className="p-4 space-y-6">
         {nodeGroups.map((group, idx) => (
           <div key={idx}>
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">
               {group.title}
             </h3>
             <div className="space-y-2">
               {group.nodes.map((node, nodeIdx) => (
-                <div
+                <Card
                   key={nodeIdx}
+                  isPressable
+                  className="cursor-move hover:border-neutral-400 dark:hover:border-neutral-500 transition-colors bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700"
+                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, node.type, node.label)}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, node.type, node.label)}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-move hover:border-blue-300 hover:bg-blue-50 transition-colors text-sm"
                 >
-                  <Icon name={node.icon} className="w-4 h-4 text-gray-600" />
-                  <span className="text-gray-700">{node.label}</span>
-                </div>
+                  <CardBody className="flex-row items-center gap-2 px-3 py-2">
+                    <Icon name={node.icon} className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                    <span className="text-sm text-neutral-700 dark:text-neutral-300">{node.label}</span>
+                  </CardBody>
+                </Card>
               ))}
             </div>
           </div>
