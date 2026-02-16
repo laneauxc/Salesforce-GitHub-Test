@@ -1,0 +1,23 @@
+---
+/**
+ * Agent Test Page
+ * Run agents in a sandbox environment and view output using HeroUI components
+ */
+import Layout from '../../layouts/Layout.astro';
+import AgentTestSandbox from '../../components/AgentTestSandbox';
+---
+
+<Layout 
+  title="Agent Test" 
+  description="Test your AI agents in a sandbox environment"
+>
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold">Agent Test Sandbox</h1>
+      <p class="text-gray-600 mt-2">Run and test your AI agents with custom inputs</p>
+    </div>
+
+    <!-- Agent Test Sandbox Component with HeroUI -->
+    <AgentTestSandbox client:visible />
+  </div>
+</Layout>
