@@ -1,19 +1,26 @@
 # Salesforce GitHub Test Documentation
 
-This is the documentation site for the Salesforce GitHub Test repository, built with Astro, React, and Tailwind CSS. It includes two modern UI screens for creating prompts and building agents visually.
+This is the documentation site for the Salesforce GitHub Test repository, built with Astro, React, and Tailwind CSS. It includes modern UI screens and a comprehensive Agent Builder Platform.
 
 ## 🚀 Features
 
 - **Documentation Site**: Comprehensive documentation with navigation and search
+- **Agent Builder Platform** (NEW): Complete agent management system with HeroUI components
+  - Agent List: View and manage all agents
+  - Agent Builder: Create and configure agents
+  - Agent Test: Test agents in a sandbox environment
+  - Test Results: View and analyze test results
 - **Chat Prompts Landing Screen**: Interactive prompt creation interface
 - **Agent Builder Canvas**: Visual node-based workflow editor with drag-and-drop
 
 ## 📦 Tech Stack
 
 - **Astro 5.x**: Modern static site builder
-- **React 18**: UI component library
+- **React 19**: UI component library
+- **HeroUI**: Modern React component library (for Agent Platform)
 - **Tailwind CSS 3**: Utility-first CSS framework
 - **TypeScript**: Type-safe development
+- **Framer Motion**: Animation library (HeroUI dependency)
 
 ## 🛠️ Getting Started
 
@@ -59,6 +66,39 @@ npm run preview
 - `/bugfixes/` - Bug fixes documentation
 - `/support/` - Support documentation
 
+### Agent Builder Platform (NEW)
+
+**Complete agent management system with HeroUI components:**
+
+- `/agents/` - **Agent List Page**
+  - View all agents in a searchable, filterable table
+  - Filter by status (Active, Testing, Inactive)
+  - Visual success rate indicators
+  - Quick Edit and Test actions
+  - HeroUI components: Table, Chip, Button, Input, Dropdown
+
+- `/agents/builder/` - **Agent Builder Page**
+  - Create new agents or edit existing ones
+  - Configure name, description, model, and instructions
+  - Select from 22+ available tools
+  - Set agent status
+  - Form validation with HeroUI
+  - HeroUI components: Card, Input, Textarea, Select, Button, Chip
+
+- `/agents/test/` - **Agent Test Page**
+  - Select agent from dropdown
+  - Input test queries
+  - Run tests with real-time feedback
+  - View results in modal or inline alerts
+  - HeroUI components: Card, Select, Textarea, Button, Alert, Modal
+
+- `/agents/results/` - **Test Results Page**
+  - Statistics dashboard with key metrics
+  - Comprehensive results table
+  - Search and filter test results
+  - Detailed result modal with input/output comparison
+  - HeroUI components: Table, Card, Chip, Button, Modal
+
 ### Application Screens
 
 **To access the UI screens:**
@@ -85,28 +125,41 @@ npm run preview
 ├── public/              # Static assets (images, fonts)
 ├── src/
 │   ├── components/      # React components
-│   │   ├── SidebarNav.tsx        # Navigation sidebar
-│   │   ├── PromptCreateCard.tsx  # Prompt creation UI
-│   │   ├── NodePalette.tsx       # Draggable node palette
-│   │   ├── Canvas.tsx            # Agent builder canvas
-│   │   ├── NodeCard.tsx          # Individual node component
-│   │   ├── EdgeRenderer.tsx      # SVG edge/connection renderer
-│   │   ├── TopControls.tsx       # Top action buttons
-│   │   └── BottomControls.tsx    # Bottom toolbar controls
+│   │   # Agent Platform Components (HeroUI)
+│   │   ├── AgentListTable.tsx       # Agent list with table
+│   │   ├── AgentBuilderForm.tsx     # Agent creation/edit form
+│   │   ├── AgentTestSandbox.tsx     # Agent testing interface
+│   │   ├── AgentResultsTable.tsx    # Test results display
+│   │   # UI Screen Components
+│   │   ├── SidebarNav.tsx           # Navigation sidebar
+│   │   ├── PromptCreateCard.tsx     # Prompt creation UI
+│   │   ├── NodePalette.tsx          # Draggable node palette
+│   │   ├── Canvas.tsx               # Agent builder canvas
+│   │   ├── NodeCard.tsx             # Individual node component
+│   │   ├── EdgeRenderer.tsx         # SVG edge/connection renderer
+│   │   ├── TopControls.tsx          # Top action buttons
+│   │   └── BottomControls.tsx       # Bottom toolbar controls
+│   ├── data/            # Demo data
+│   │   └── agents.ts                # Agent and test result data
 │   ├── layouts/         # Page layouts
-│   │   └── Layout.astro          # Main documentation layout
+│   │   └── Layout.astro             # Main documentation layout
 │   ├── pages/           # Site pages (file-based routing)
-│   │   ├── index.astro           # Home page
-│   │   ├── chat-prompts.astro    # Chat prompts screen
-│   │   ├── agent-builder.astro   # Agent builder screen
-│   │   ├── features/             # Feature documentation
-│   │   ├── bugfixes/             # Bug fix documentation
-│   │   └── support/              # Support documentation
+│   │   ├── index.astro              # Home page
+│   │   ├── agents/                  # Agent Platform pages
+│   │   │   ├── index.astro          # Agent list
+│   │   │   ├── builder.astro        # Agent builder
+│   │   │   ├── test.astro           # Agent test
+│   │   │   └── results.astro        # Test results
+│   │   ├── chat-prompts.astro       # Chat prompts screen
+│   │   ├── agent-builder.astro      # Agent builder screen
+│   │   ├── features/                # Feature documentation
+│   │   ├── bugfixes/                # Bug fix documentation
+│   │   └── support/                 # Support documentation
 │   └── styles/          # Global styles
-│       ├── global.css            # Cyberpunk-themed documentation styles
-│       └── tailwind.css          # Tailwind base styles
+│       ├── global.css               # Cyberpunk-themed documentation styles
+│       └── tailwind.css             # Tailwind base styles
 ├── astro.config.mjs     # Astro configuration
-├── tailwind.config.mjs  # Tailwind configuration
+├── tailwind.config.mjs  # Tailwind configuration (with HeroUI plugin)
 ├── tsconfig.json        # TypeScript configuration
 └── package.json         # Dependencies and scripts
 ```
@@ -184,11 +237,27 @@ npm run preview
 
 ## 📸 Screenshots
 
-### Chat Prompts Landing Screen
+### Agent Builder Platform (HeroUI)
+
+#### Agent List Page
+![Agent List](https://github.com/user-attachments/assets/ce04c43a-a350-4750-94a2-f61ffb84f7be)
+
+#### Agent Builder Page
+![Agent Builder](https://github.com/user-attachments/assets/4cb1528c-c3a5-4ddf-98d4-eb8064c5611d)
+
+#### Agent Test Page
+![Agent Test](https://github.com/user-attachments/assets/1c11083c-b523-4076-9697-60bd1e20df0b)
+
+#### Test Results Page
+![Test Results](https://github.com/user-attachments/assets/4d89e5ed-5759-4c8f-8d12-2023178e1e6a)
+
+### UI Screens
+
+#### Chat Prompts Landing Screen
 ![Chat Prompts](https://github.com/user-attachments/assets/fd8173f8-c1e9-48e2-a9c3-bfc973b1fd7a)
 
-### Agent Builder Canvas Screen
-![Agent Builder](https://github.com/user-attachments/assets/2cfbc180-0478-433c-8273-17bd0521ba3c)
+#### Agent Builder Canvas Screen
+![Agent Builder Canvas](https://github.com/user-attachments/assets/2cfbc180-0478-433c-8273-17bd0521ba3c)
 
 ## 🧪 Testing
 

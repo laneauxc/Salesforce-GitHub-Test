@@ -1,0 +1,38 @@
+---
+/**
+ * Agent List Page
+ * Displays all available agents in a table format using HeroUI components
+ */
+import Layout from '../../layouts/Layout.astro';
+import AgentListTable from '../../components/AgentListTable';
+
+const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+---
+
+<Layout 
+  title="Agents" 
+  description="Manage and view all your AI agents in one place"
+>
+  <div class="space-y-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold">AI Agents</h1>
+        <p class="text-gray-600 mt-2">Manage and monitor your AI agents</p>
+      </div>
+      <div class="flex gap-3">
+        <a 
+          href={`${baseUrl}agents/builder/`}
+          class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Create Agent
+        </a>
+      </div>
+    </div>
+
+    <!-- Agent List Table Component with HeroUI -->
+    <AgentListTable client:visible />
+  </div>
+</Layout>

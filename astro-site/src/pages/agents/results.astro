@@ -1,0 +1,23 @@
+---
+/**
+ * Agent Results Page
+ * Display test results and analytics using HeroUI components
+ */
+import Layout from '../../layouts/Layout.astro';
+import AgentResultsTable from '../../components/AgentResultsTable';
+---
+
+<Layout 
+  title="Agent Test Results" 
+  description="View and analyze test results from your AI agents"
+>
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold">Test Results</h1>
+      <p class="text-gray-600 mt-2">View and analyze all agent test results</p>
+    </div>
+
+    <!-- Agent Results Table Component with HeroUI -->
+    <AgentResultsTable client:visible />
+  </div>
+</Layout>
