@@ -75,7 +75,7 @@ export default function NodePalette({ onNodeDragStart }: NodePaletteProps) {
                   key={nodeIdx}
                   isPressable
                   className="cursor-move hover:border-neutral-400 dark:hover:border-neutral-500 transition-colors bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700"
-                  onDragStart={(e) => handleDragStart(e as any, node.type, node.label)}
+                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, node.type, node.label)}
                   draggable
                 >
                   <CardBody className="flex-row items-center gap-2 px-3 py-2">

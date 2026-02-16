@@ -255,7 +255,7 @@ export default function Canvas() {
       <div className="absolute top-16 right-4 z-20 flex gap-2">
         <Button
           onClick={toggleConnectionMode}
-          color={isConnecting ? "default" : "default"}
+          color="default"
           variant={isConnecting ? "solid" : "bordered"}
           className={isConnecting 
             ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 shadow-lg" 
