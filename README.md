@@ -74,6 +74,7 @@ Create a test issue to verify sync:
 
 ## 📚 Documentation
 
+- **[GitHub Sync Explained](GITHUB_SYNC_EXPLAINED.md)** - **NEW!** Simple explanation of how the sync works
 - **[MCP Integration Guide](docs/MCP_INTEGRATION_GUIDE.md)** - Complete usage guide
 - **[Configuration Reference](docs/MCP_CONFIGURATION_REFERENCE.md)** - All config options
 - **[Architecture](#architecture)** - System design overview
