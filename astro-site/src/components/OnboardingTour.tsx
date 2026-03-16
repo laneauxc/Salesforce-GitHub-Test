@@ -343,12 +343,19 @@ export default function OnboardingTour({
   const vw = windowSize.w || (typeof window !== 'undefined' ? window.innerWidth : 1024);
   const vh = windowSize.h || (typeof window !== 'undefined' ? window.innerHeight : 768);
 
+  // Shared handlers to block interaction with areas outside the spotlight
+  const blockInteraction = {
+    onClick: (e: React.MouseEvent) => e.stopPropagation(),
+    onMouseDown: (e: React.MouseEvent) => e.stopPropagation(),
+  };
+
   return (
     <>
-      {/* Overlay rendered as 4 dark rectangles around the spotlight */}
+      {/* Overlay rendered as 4 dark rectangles around the spotlight.
+          Each rectangle blocks interaction with areas outside the spotlight,
+          while the spotlight area remains fully interactive. */}
       <div
-        className="pointer-events-none"
-        style={{ position: 'fixed', inset: 0, zIndex: 10000 }}
+        style={{ position: 'fixed', inset: 0, zIndex: 10000, pointerEvents: 'none' }}
         aria-hidden="true"
       >
         {rect ? (
@@ -362,7 +369,9 @@ export default function OnboardingTour({
                 right: 0,
                 height: Math.max(0, rect.top),
                 background: 'rgba(0,0,0,0.55)',
+                pointerEvents: 'auto',
               }}
+              {...blockInteraction}
             />
             {/* Bottom */}
             <div
@@ -373,7 +382,9 @@ export default function OnboardingTour({
                 right: 0,
                 bottom: 0,
                 background: 'rgba(0,0,0,0.55)',
+                pointerEvents: 'auto',
               }}
+              {...blockInteraction}
             />
             {/* Left */}
             <div
@@ -384,7 +395,9 @@ export default function OnboardingTour({
                 width: Math.max(0, rect.left),
                 height: Math.max(0, rect.height),
                 background: 'rgba(0,0,0,0.55)',
+                pointerEvents: 'auto',
               }}
+              {...blockInteraction}
             />
             {/* Right */}
             <div
@@ -395,7 +408,9 @@ export default function OnboardingTour({
                 right: 0,
                 height: Math.max(0, rect.height),
                 background: 'rgba(0,0,0,0.55)',
+                pointerEvents: 'auto',
               }}
+              {...blockInteraction}
             />
             {/* Spotlight border ring */}
             <div
@@ -418,19 +433,12 @@ export default function OnboardingTour({
               position: 'absolute',
               inset: 0,
               background: 'rgba(0,0,0,0.55)',
+              pointerEvents: 'auto',
             }}
+            {...blockInteraction}
           />
         )}
       </div>
-
-      {/* Clickthrough blocker outside the spotlight (prevents interaction with non-highlighted areas) */}
-      {rect && (
-        <div
-          style={{ position: 'fixed', inset: 0, zIndex: 10000 }}
-          onClick={(e) => e.stopPropagation()}
-          aria-hidden="true"
-        />
-      )}
 
       {/* Tooltip card */}
       <TooltipCard
