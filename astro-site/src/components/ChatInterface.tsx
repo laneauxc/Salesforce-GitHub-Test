@@ -85,7 +85,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
         <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4">
           <div className="flex items-center justify-between max-w-3xl mx-auto">
             <div className="flex items-center gap-4">
-              <div>
+              <div data-tour="model-selector">
                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Model</label>
                 <select
                   value={selectedModel}
@@ -99,7 +99,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
                   <option value="claude-3-sonnet">Claude 3 Sonnet</option>
                 </select>
               </div>
-              <div>
+              <div data-tour="assistant-selector">
                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Assistant</label>
                 <select
                   value={selectedAssistant || ''}
@@ -140,6 +140,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
           {/* Input row */}
           <div className="w-full flex gap-3">
             <button
+              data-tour="create-button"
               onClick={onCreateAgentClick}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2 whitespace-nowrap"
             >
@@ -147,7 +148,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
               <span>Create</span>
             </button>
 
-            <div className="flex-1 relative flex items-center">
+            <div data-tour="message-input" className="flex-1 relative flex items-center">
               <textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
@@ -179,7 +180,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
           </div>
 
           {/* Suggestion chips */}
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div data-tour="suggestions" className="flex flex-wrap gap-2 justify-center">
             {suggestions.map((suggestion, idx) => (
               <button
                 key={idx}

@@ -247,12 +247,13 @@ export default function Canvas() {
   };
 
   return (
-    <div className="flex-1 relative bg-gray-100">
+    <div data-tour="canvas-area" className="flex-1 relative bg-gray-100">
       <TopControls />
       
       {/* Connection Mode Control - positioned below TopControls to avoid overlap */}
       <div className="absolute top-16 right-4 z-20 flex gap-2">
         <button
+          data-tour="connect-nodes"
           onClick={toggleConnectionMode}
           className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-lg ${
             isConnecting

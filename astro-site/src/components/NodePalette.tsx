@@ -61,7 +61,7 @@ export default function NodePalette({ onNodeDragStart }: NodePaletteProps) {
   };
 
   return (
-    <div className="w-64 h-full bg-gray-50 border-r border-gray-200 overflow-y-auto">
+    <div data-tour="node-palette" className="w-64 h-full bg-gray-50 border-r border-gray-200 overflow-y-auto">
       <div className="p-4 space-y-6">
         {nodeGroups.map((group, idx) => (
           <div key={idx}>

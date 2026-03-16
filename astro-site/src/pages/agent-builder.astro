@@ -1,6 +1,7 @@
 ---
 import NodePalette from '../components/NodePalette';
 import Canvas from '../components/Canvas';
+import OnboardingTour from '../components/OnboardingTour';
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 ---
@@ -20,6 +21,46 @@ const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_UR
       <!-- Canvas Area -->
       <Canvas client:load />
     </div>
+
+    <!-- Onboarding Tour -->
+    <OnboardingTour
+      client:load
+      storageKey="agentBuilderOnboardingCompleted"
+      steps={[
+        {
+          title: "Welcome to Agent Builder! 🤖",
+          description: "Build powerful AI workflows by connecting nodes on a visual canvas. This tour will show you the key tools you need to create your first agent workflow.",
+        },
+        {
+          target: "[data-tour='node-palette']",
+          title: "Node Palette",
+          description: "Drag nodes from this panel onto the canvas to build your workflow. Nodes are grouped into Core (Agent, Classify, End), Tools (File Search, Guardrails, MCP), Logic (If/Else, While), and Data categories.",
+          placement: "right",
+          actionHint: "Try dragging an 'Agent' node from the Core section onto the canvas.",
+        },
+        {
+          target: "[data-tour='canvas-area']",
+          title: "Visual Canvas",
+          description: "This is your workflow canvas. Drop nodes here and arrange them. You can drag nodes to reposition them, zoom in/out, and pan around the canvas. Nodes are connected by edges to define the flow.",
+          placement: "top",
+          actionHint: "Drop a node from the palette onto the canvas to add it to your workflow.",
+        },
+        {
+          target: "[data-tour='connect-nodes']",
+          title: "Connect Nodes",
+          description: "Click 'Connect Nodes' to enter connection mode. Then click a source node and a target node to draw an edge between them. Edges define the flow of data from one step to the next.",
+          placement: "left",
+          actionHint: "Click 'Connect Nodes', then click a node to start drawing a connection.",
+        },
+        {
+          target: "[data-tour='publish-button']",
+          title: "Publish Your Workflow",
+          description: "Once your workflow is ready, click Publish to make it live. You can also click Code to see the generated JSON code for your workflow, or Evaluate to test it.",
+          placement: "bottom",
+          actionHint: "Click 'Publish' when your agent workflow is complete and ready to deploy!",
+        },
+      ]}
+    />
 
     <!-- Back to Chat Prompts link -->
     <a
