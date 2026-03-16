@@ -2,6 +2,7 @@
 import SidebarNav from '../components/SidebarNav';
 import ChatInterface from '../components/ChatInterface';
 import ProfileMenu from '../components/ProfileMenu';
+import OnboardingTour from '../components/OnboardingTour';
 
 const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
@@ -72,6 +73,53 @@ const navSections = [
           onCreateAgentClick={() => {
             window.location.href = `${baseUrl}agent-builder/`;
           }}
+        />
+
+        <!-- Onboarding Tour -->
+        <OnboardingTour
+          client:load
+          storageKey="chatPromptsOnboardingCompleted"
+          steps={[
+            {
+              title: "Welcome to Chat Prompts! 👋",
+              description: "This quick tour will walk you through the key features of the Chat Prompts page. You'll learn how to select a model, use an assistant, send messages, and create your own agent. Click Next to get started!",
+            },
+            {
+              target: "[data-tour='model-selector']",
+              title: "Choose Your AI Model",
+              description: "Select the AI model you want to chat with. Options include GPT-4, GPT-4 Turbo, GPT-3.5 Turbo, Claude 3 Opus, and more. Different models have different capabilities and speeds.",
+              placement: "bottom",
+              actionHint: "Try clicking the dropdown to explore the available models.",
+            },
+            {
+              target: "[data-tour='assistant-selector']",
+              title: "Select an Assistant",
+              description: "Optionally attach a pre-configured assistant to your chat. Assistants can have custom instructions, knowledge, and behaviors. Choose 'None (Direct)' to chat directly with the selected model.",
+              placement: "bottom",
+              actionHint: "Try selecting an assistant from the dropdown to use its specialized capabilities.",
+            },
+            {
+              target: "[data-tour='message-input']",
+              title: "Type Your Message",
+              description: "This is the main input area where you type your prompts or questions. Press Enter or click the send arrow to submit. Use Shift+Enter for a new line.",
+              placement: "top",
+              actionHint: "Try typing a message like 'Help me plan a trip to Paris'.",
+            },
+            {
+              target: "[data-tour='suggestions']",
+              title: "Quick-Start Suggestions",
+              description: "Click any suggestion chip to instantly fill the input with a pre-written prompt. These are great starting points for common tasks like trip planning, image generation, code debugging, and more.",
+              placement: "top",
+              actionHint: "Click one of the suggestion chips to pre-fill your message.",
+            },
+            {
+              target: "[data-tour='create-button']",
+              title: "Create an Agent",
+              description: "Ready to build your own custom AI agent? Click the + Create button to open the Agent Builder, where you can visually design a workflow using nodes and edges to automate complex tasks.",
+              placement: "bottom",
+              actionHint: "Click '+ Create' to open the Agent Builder and start building your first agent!",
+            },
+          ]}
         />
       </main>
     </div>
