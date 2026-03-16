@@ -28,6 +28,11 @@ interface OnboardingTourProps {
   /** localStorage key used to persist completion. Defaults to 'onboardingCompleted' */
   storageKey?: string;
   onComplete?: () => void;
+  /**
+   * When true, shows a persistent "Take Tour" button after the tour has been
+   * completed or skipped, allowing users to replay it at any time.
+   */
+  showRestartButton?: boolean;
 }
 
 interface TargetRect {
@@ -261,17 +266,21 @@ export default function OnboardingTour({
   steps,
   storageKey = 'onboardingCompleted',
   onComplete,
+  showRestartButton = false,
 }: OnboardingTourProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [tourCompleted, setTourCompleted] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<TargetRect | null>(null);
   const [windowSize, setWindowSize] = useState({ w: 0, h: 0 });
   const resizeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Show tour if not previously completed
+  // Show tour if not previously completed; track completion state for restart button
   useEffect(() => {
     const completed = localStorage.getItem(storageKey);
-    if (!completed) {
+    if (completed) {
+      setTourCompleted(true);
+    } else {
       // Small delay so the page has rendered its elements
       const t = setTimeout(() => setIsVisible(true), TOUR_INITIAL_DELAY_MS);
       return () => clearTimeout(t);
@@ -332,13 +341,49 @@ export default function OnboardingTour({
   const completeTour = useCallback(() => {
     localStorage.setItem(storageKey, 'true');
     setIsVisible(false);
+    setTourCompleted(true);
     onComplete?.();
   }, [storageKey, onComplete]);
 
   const handleSkip = completeTour;
   const handleFinish = completeTour;
 
-  if (!isVisible) return null;
+  const handleRestart = useCallback(() => {
+    localStorage.removeItem(storageKey);
+    setTourCompleted(false);
+    setStepIndex(0);
+    setIsVisible(true);
+  }, [storageKey]);
+
+  if (!isVisible) {
+    if (showRestartButton && tourCompleted) {
+      return (
+        <button
+          onClick={handleRestart}
+          className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-colors text-sm font-medium"
+          aria-label="Restart guided tour"
+          title="Take the guided tour again"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Take Tour
+        </button>
+      );
+    }
+    return null;
+  }
 
   const vw = windowSize.w || (typeof window !== 'undefined' ? window.innerWidth : 1024);
   const vh = windowSize.h || (typeof window !== 'undefined' ? window.innerHeight : 768);
