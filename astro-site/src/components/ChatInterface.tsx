@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { dataStore, type Message } from '../utils/dataStore';
+import AIWritingAssistantPanel from './AIWritingAssistantPanel';
 
 interface ChatInterfaceProps {
   onCreateAgentClick?: () => void;
@@ -13,6 +14,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
   const [selectedModel, setSelectedModel] = useState('gpt-4');
   const [selectedAssistant, setSelectedAssistant] = useState<string | null>(null);
   const [assistants, setAssistants] = useState(dataStore.getAssistants());
+  const [showWritingPanel, setShowWritingPanel] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -67,6 +69,21 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
 
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion);
+  };
+
+  const handleRewrite = () => {
+    if (!inputValue.trim()) return;
+    setInputValue(`[Rewriting…] ${inputValue}`);
+  };
+
+  const handleProofread = () => {
+    if (!inputValue.trim()) return;
+    setInputValue(`[Proofreading…] ${inputValue}`);
+  };
+
+  const handleAdjust = (tone: string) => {
+    if (!inputValue.trim()) return;
+    setInputValue(`[Adjusting to "${tone}"…] ${inputValue}`);
   };
 
   const suggestions = [
@@ -136,6 +153,19 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
 
           {/* Title */}
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Create a chat prompt</h2>
+
+          {/* AI Writing Assistant onboarding panel */}
+          {showWritingPanel && (
+            <div className="w-full">
+              <AIWritingAssistantPanel
+                hasText={!!inputValue.trim()}
+                onDismiss={() => setShowWritingPanel(false)}
+                onRewrite={handleRewrite}
+                onProofread={handleProofread}
+                onAdjust={handleAdjust}
+              />
+            </div>
+          )}
 
           {/* Input row */}
           <div className="w-full flex gap-3">
@@ -311,8 +341,19 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
 
       {/* Input area */}
       <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4">
-        <div className="max-w-3xl mx-auto flex gap-3">
-          <div className="flex-1 relative flex items-center">
+        <div className="max-w-3xl mx-auto">
+          {/* AI Writing Assistant panel in chat view */}
+          {showWritingPanel && (
+            <AIWritingAssistantPanel
+              hasText={!!inputValue.trim()}
+              onDismiss={() => setShowWritingPanel(false)}
+              onRewrite={handleRewrite}
+              onProofread={handleProofread}
+              onAdjust={handleAdjust}
+            />
+          )}
+          <div className="flex gap-3">
+            <div className="flex-1 relative flex items-center">
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -340,6 +381,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
                 />
               </svg>
             </button>
+          </div>
           </div>
         </div>
       </div>
