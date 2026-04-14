@@ -6,11 +6,8 @@ interface ChatInterfaceProps {
   onCreateAgentClick?: () => void;
 }
 
-const aiWritingButtonClass =
-  'px-3 py-2 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1.5 whitespace-nowrap self-center';
-
 const aiWritingPenIcon = (
-  <svg className="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H8v-2.414a2 2 0 01.586-1.414z" />
   </svg>
 );
@@ -178,17 +175,6 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
 
           {/* Input row */}
           <div className="w-full flex gap-3">
-            {!showWritingPanel && (
-              <button
-                onClick={() => setShowWritingPanel(true)}
-                title="Open AI Writing Assistant"
-                aria-label="Open AI Writing Assistant"
-                className={aiWritingButtonClass}
-              >
-                {aiWritingPenIcon}
-                AI Writing
-              </button>
-            )}
             <button
               data-tour="create-button"
               onClick={onCreateAgentClick}
@@ -199,13 +185,21 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
             </button>
 
             <div data-tour="message-input" className="flex-1 relative flex items-center">
+              <button
+                onClick={() => setShowWritingPanel(!showWritingPanel)}
+                title={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
+                aria-label={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
+                className={`absolute left-2 p-1.5 rounded transition-colors ${showWritingPanel ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40' : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
+              >
+                {aiWritingPenIcon}
+              </button>
               <textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Generate..."
                 rows={1}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-12 resize-none dark:bg-gray-700 dark:text-white"
+                className="w-full pl-9 pr-12 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none dark:bg-gray-700 dark:text-white"
               />
               <button
                 onClick={handleSendMessage}
@@ -373,25 +367,22 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
             />
           )}
           <div className="flex gap-3">
-            {!showWritingPanel && (
+            <div className="flex-1 relative flex items-center">
               <button
-                onClick={() => setShowWritingPanel(true)}
-                title="Open AI Writing Assistant"
-                aria-label="Open AI Writing Assistant"
-                className={aiWritingButtonClass}
+                onClick={() => setShowWritingPanel(!showWritingPanel)}
+                title={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
+                aria-label={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
+                className={`absolute left-2 p-1.5 rounded transition-colors ${showWritingPanel ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40' : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
               >
                 {aiWritingPenIcon}
-                AI Writing
               </button>
-            )}
-            <div className="flex-1 relative flex items-center">
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               rows={1}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm pr-12 resize-none dark:bg-gray-700 dark:text-white"
+              className="w-full pl-9 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none dark:bg-gray-700 dark:text-white"
             />
             <button
               onClick={handleSendMessage}
