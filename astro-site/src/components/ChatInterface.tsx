@@ -12,6 +12,12 @@ const aiWritingPenIcon = (
   </svg>
 );
 
+const aiWritingIconButtonClass = (active: boolean) =>
+  `absolute left-2 p-1.5 rounded transition-colors ${active ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40' : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`;
+
+const textareaBaseClass =
+  'w-full pl-9 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none dark:bg-gray-700 dark:text-white';
+
 export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -189,7 +195,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
                 onClick={() => setShowWritingPanel(!showWritingPanel)}
                 title={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
                 aria-label={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
-                className={`absolute left-2 p-1.5 rounded transition-colors ${showWritingPanel ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40' : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
+                className={aiWritingIconButtonClass(showWritingPanel)}
               >
                 {aiWritingPenIcon}
               </button>
@@ -199,7 +205,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
                 onKeyPress={handleKeyPress}
                 placeholder="Generate..."
                 rows={1}
-                className="w-full pl-9 pr-12 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none dark:bg-gray-700 dark:text-white"
+                className={`${textareaBaseClass} py-2`}
               />
               <button
                 onClick={handleSendMessage}
@@ -372,7 +378,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
                 onClick={() => setShowWritingPanel(!showWritingPanel)}
                 title={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
                 aria-label={showWritingPanel ? 'Hide AI Writing Assistant' : 'Open AI Writing Assistant'}
-                className={`absolute left-2 p-1.5 rounded transition-colors ${showWritingPanel ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40' : 'text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`}
+                className={aiWritingIconButtonClass(showWritingPanel)}
               >
                 {aiWritingPenIcon}
               </button>
@@ -382,7 +388,7 @@ export default function ChatInterface({ onCreateAgentClick }: ChatInterfaceProps
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               rows={1}
-              className="w-full pl-9 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none dark:bg-gray-700 dark:text-white"
+              className={`${textareaBaseClass} py-3`}
             />
             <button
               onClick={handleSendMessage}
